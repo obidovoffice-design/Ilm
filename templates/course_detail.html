@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ course.title }} - Ilm Plyus</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
+          </a>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
+          <li><a href="{{ url_for('courses') }}" class="active">Kurslar</a></li>
+          <li><a href="{{ url_for('news_list') }}">Yangiliklar</a></li>
+          <li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
+          <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
+        </ul>
+        <div class="nav-buttons">
+          <a href="tel:+998901234567" class="btn btn-outline"
+            ><i class="fas fa-phone"></i> Qo'ng'iroq</a
+          >
+          <a href="{{ url_for('contact') }}" class="btn btn-primary"
+            >Ariza qoldirish</a
+          >
+        </div>
+        <div class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" style="padding: 100px 0 60px">
+        <div class="container">
+          <div class="hero-content" style="text-align: center">
+            <h1>{{ course.title }}</h1>
+            <p>{{ course.category|upper }} kursi</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="course-detail">
+        <div class="container">
+          <div class="course-info-grid">
+            <div class="course-info-main">
+              <div class="course-icon-large">{{ course.icon }}</div>
+              <h2>{{ course.title }}</h2>
+              <p class="course-category">
+                <i class="fas fa-tag"></i> {{ course.category }}
+              </p>
+
+              <div class="course-details-box">
+                <h3>Kurs tafsilotlari</h3>
+                <div class="detail-row">
+                  <span class="detail-label">Darajasi:</span>
+                  <span class="detail-value">{{ course.level }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Davomiyligi:</span>
+                  <span class="detail-value">{{ course.duration }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Narxi:</span>
+                  <span class="detail-value">{{ course.price }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Talabalar soni:</span>
+                  <span class="detail-value">{{ course.students_count }}</span>
+                </div>
+              </div>
+
+              <h3 style="margin-top: 40px">Kurs tavsifi</h3>
+              <p style="line-height: 1.8; color: #666">
+                {{ course.description }}
+              </p>
+
+              <div style="margin-top: 40px">
+                <a
+                  href="{{ url_for('contact') }}"
+                  class="btn btn-primary btn-lg"
+                >
+                  <i class="fas fa-envelope"></i> Ariza qoldirish
+                </a>
+                <a
+                  href="{{ url_for('courses') }}"
+                  class="btn btn-outline btn-lg"
+                  style="margin-left: 10px"
+                >
+                  <i class="fas fa-arrow-left"></i> Orqaga
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>Ilm Plyus</h3>
+            <p>
+              Zamonaviy ta'lim texnologiyasini sifatli ta'limga aylantirish
+              bizning maqsadimiz.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h4>Tezkor bog'lanish</h4>
+            <p>
+              <i class="fas fa-phone"></i> +998 90 123 45 67<br />
+              <i class="fas fa-envelope"></i> info@ilmplyus.uz
+            </p>
+          </div>
+          <div class="footer-section">
+            <h4>Ijtimoiy tarmoqlar</h4>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-telegram"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 Ilm Plyus. Barcha huquqlar himoyalangan.</p>
+        </div>
+      </div>
+    </footer>
+
+    <style>
+      .course-detail {
+        padding: 80px 0;
+      }
+
+      .course-info-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .course-info-main {
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .course-icon-large {
+        font-size: 80px;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .course-info-main h2 {
+        font-size: 32px;
+        margin: 20px 0;
+        text-align: center;
+        color: #1a1a2e;
+      }
+
+      .course-category {
+        text-align: center;
+        color: #666;
+        margin: 10px 0 30px;
+      }
+
+      .course-details-box {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 30px 0;
+      }
+
+      .course-details-box h3 {
+        margin-top: 0;
+        color: #1a1a2e;
+      }
+
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+
+      .detail-label {
+        font-weight: 600;
+        color: #1a1a2e;
+      }
+
+      .detail-value {
+        color: #007bff;
+        font-weight: 500;
+      }
+
+      .btn-lg {
+        padding: 12px 30px;
+        font-size: 16px;
+        display: inline-block;
+        margin-top: 20px;
+      }
+
+      @media (max-width: 768px) {
+        .course-info-main {
+          padding: 20px;
+        }
+
+        .course-info-main h2 {
+          font-size: 24px;
+        }
+
+        .detail-row {
+          flex-direction: column;
+          gap: 5px;
+        }
+      }
+    </style>
+  </body>
+</html>

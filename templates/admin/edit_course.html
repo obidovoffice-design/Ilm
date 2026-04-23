@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kursni tahrirlash - Admin Panel</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='admin.css') }}"
+    />
+  </head>
+  <body>
+    <div class="admin-container">
+      <div class="admin-sidebar">
+        <div class="admin-sidebar-header">
+          <img src="{{ url_for('static', filename='logo.png') }}" alt="Ilm Plyus Logo">
+          <p>Admin Panel</p>
+        </div>
+        <div class="admin-sidebar-menu">
+          <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item">
+            <i class="fas fa-dashboard"></i> Dashboard
+          </a>
+          <a
+            href="{{ url_for('admin_courses') }}"
+            class="admin-menu-item active"
+          >
+            <i class="fas fa-book"></i> Kurslar
+          </a>
+          <a href="{{ url_for('admin_branches') }}" class="admin-menu-item">
+            <i class="fas fa-map-marker-alt"></i> Filiallar
+          </a>
+          <a href="{{ url_for('admin_testimonials') }}" class="admin-menu-item">
+            <i class="fas fa-star"></i> O'quvchilar fikriyati
+          </a>
+          <a href="{{ url_for('admin_news') }}" class="admin-menu-item">
+            <i class="fas fa-newspaper"></i> Yangiliklar
+          </a>
+          <a href="{{ url_for('admin_profile') }}" class="admin-menu-item">
+            <i class="fas fa-user-circle"></i> Profil
+          </a>
+          <a href="{{ url_for('admin_applications') }}" class="admin-menu-item">
+            <i class="fas fa-envelope"></i> Arizalar
+          </a>
+          <a href="{{ url_for('admin_logout') }}" class="admin-menu-item">
+            <i class="fas fa-sign-out-alt"></i> Chiqish
+          </a>
+        </div>
+      </div>
+      <div class="admin-main">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h5>Kursni tahrirlash</h5>
+          </div>
+          <div class="admin-card-body">
+            <form method="post">
+              <div class="admin-form-group">
+                <label>Kurs nomi *</label>
+                <input
+                  type="text"
+                  name="title"
+                  class="admin-form-control"
+                  value="{{ course.title }}"
+                  required
+                />
+              </div>
+              <div class="admin-form-group">
+                <label>Tavsif *</label>
+                <textarea
+                  name="description"
+                  class="admin-form-control"
+                  required
+                >
+{{ course.description }}</textarea
+                >
+              </div>
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label>Davomiyligi *</label>
+                  <input
+                    type="text"
+                    name="duration"
+                    class="admin-form-control"
+                    value="{{ course.duration }}"
+                    required
+                  />
+                </div>
+                <div class="admin-form-group">
+                  <label>Narxi *</label>
+                  <input
+                    type="text"
+                    name="price"
+                    class="admin-form-control"
+                    value="{{ course.price }}"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label>Kategoriya *</label>
+                  <input
+                    type="text"
+                    name="category"
+                    class="admin-form-control"
+                    value="{{ course.category }}"
+                    required
+                  />
+                </div>
+                <div class="admin-form-group">
+                  <label>Daraja *</label>
+                  <input
+                    type="text"
+                    name="level"
+                    class="admin-form-control"
+                    value="{{ course.level }}"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label>Talabalar soni</label>
+                  <input
+                    type="number"
+                    name="students_count"
+                    class="admin-form-control"
+                    value="{{ course.students_count }}"
+                  />
+                </div>
+                <div class="admin-form-group">
+                  <label>Ikonka (emoji yoki rasm)</label>
+                  <input
+                    type="text"
+                    name="icon"
+                    class="admin-form-control"
+                    value="{{ course.icon }}"
+                  />
+                </div>
+              </div>
+              <div class="admin-form-group">
+                <label>Faollik</label>
+                <input
+                  type="checkbox"
+                  name="is_active"
+                  {%
+                  if
+                  course.is_active
+                  %}checked{%
+                  endif
+                  %}
+                />
+                Faol
+              </div>
+              <button type="submit" class="admin-btn admin-btn-primary">
+                <i class="fas fa-save"></i> Saqlash
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

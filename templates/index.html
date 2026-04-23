@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ilm Plyus - Zamonaviy ta'lim markazi</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+<link
+href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap"
+rel="stylesheet"
+/>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<style>
+.branch-selector {
+background: white;
+padding: 30px;
+border-radius: 15px;
+box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+margin-bottom: 30px;
+}
+
+.branch-selector h3 {
+color: var(--primary);
+margin-bottom: 20px;
+font-size: 1.5rem;
+}
+
+.branch-buttons {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+margin-bottom: 20px;
+}
+
+.branch-btn {
+padding: 12px 25px;
+border: 2px solid var(--primary);
+background: white;
+color: var(--primary);
+border-radius: 8px;
+cursor: pointer;
+font-weight: 600;
+transition: all 0.3s;
+font-size: 1rem;
+}
+
+.branch-btn:hover {
+background: var(--primary);
+color: white;
+}
+
+.branch-btn.active {
+background: var(--secondary);
+border-color: var(--secondary);
+color: white;
+}
+
+#branchMap {
+height: 400px;
+border-radius: 15px;
+margin-top: 20px;
+border: 3px solid #f0f0f0;
+}
+
+.branch-info-panel {
+background: var(--light);
+padding: 20px;
+border-radius: 10px;
+margin-top: 20px;
+display: none;
+}
+
+.branch-info-panel.active {
+display: block;
+animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+from {
+opacity: 0;
+transform: translateY(-10px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+.branch-detail {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 20px;
+}
+
+.branch-detail-item {
+display: flex;
+align-items: center;
+gap: 10px;
+color: var(--dark);
+}
+
+.branch-detail-item i {
+color: var(--secondary);
+font-size: 1.2rem;
+width: 25px;
+}
+
+.feature-badge {
+display: inline-block;
+padding: 5px 15px;
+background: var(--secondary);
+color: white;
+border-radius: 20px;
+font-size: 0.85rem;
+margin: 3px;
+}
+</style>
+</head>
+<body>
+<header>
+<nav>
+<div class="logo">
+          <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
+          </a>
+        </div>
+<ul class="nav-menu">
+<li>
+<a href="{{ url_for('index') }}" class="active">Bosh sahifa</a>
+</li>
+<li><a href="{{ url_for('courses') }}">Kurslar</a></li>
+<li><a href="{{ url_for('news_list') }}">Yangiliklar</a></li>
+<li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
+<li><a href="{{ url_for('contact') }}">Aloqa</a></li>
+</ul>
+<div class="nav-buttons">
+<button id="theme-toggle" class="theme-toggle" title="Mavzuni o'zgartirish">
+  <i class="fas fa-moon"></i>
+</button>
+<a href="tel:+998901234567" class="btn btn-outline"
+><i class="fas fa-phone"></i> Qo'ng'iroq</a
+>
+<a href="#" class="btn btn-primary" onclick="openApplicationForm()"
+>Ro'yhatdan o'tish</a
+>
+</div>
+<div class="menu-toggle">
+<i class="fas fa-bars"></i>
+</div>
+</nav>
+</header>
+
+<main>
+<!-- Hero Section (Slider) -->
+<section class="hero-slider">
+  <div class="swiper main-slider">
+      <div class="swiper-wrapper">
+        {% for slider in sliders %}
+        <div class="swiper-slide">
+          <div
+            class="slide-bg"
+            style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ url_for('static', filename=slider.image_url) }}')"
+          ></div>
+          <div class="slide-content">
+            <h1 data-aos="fade-up" data-aos-delay="100">
+              {{ slider.title }}
+            </h1>
+            <p data-aos="fade-up" data-aos-delay="200">
+              {{ slider.description }}
+            </p>
+            <div
+              class="hero-stats"
+              data-aos="fade-up"
+              data-aos-delay="300"
+            >
+              <div class="stat-item">
+                <span class="stat-number">10+</span>
+                <span class="stat-label">Yillik tajriba</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">5000+</span>
+                <span class="stat-label">Muvaffaqiyatli bitiruvchilar</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">20+</span>
+                <span class="stat-label">Professional ustozlar</span>
+              </div>
+            </div>
+            <div
+              class="hero-btns"
+              data-aos="fade-up"
+              data-aos-delay="400"
+            >
+              <a href="#courses" class="btn btn-primary">Kurslarni ko'rish</a>
+              <a href="#contact" class="btn btn-outline-white"
+                >Konsultatsiya olish</a
+              >
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <!-- Default fallback slide if no sliders in DB -->
+        <div class="swiper-slide">
+          <div
+            class="slide-bg"
+            style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ url_for('static', filename='img/slider1.png') }}')"
+          ></div>
+          <div class="slide-content">
+            <h1 data-aos="fade-up" data-aos-delay="100">Bilim sari zamonaviy yo'l</h1>
+            <p data-aos="fade-up" data-aos-delay="200">Ilm Plyus - sizning yorqin kelajagingiz poydevori</p>
+            <div class="hero-btns" data-aos="fade-up" data-aos-delay="400">
+              <a href="#courses" class="btn btn-primary">Boshlash</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    <!-- Pagination & Navigation -->
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+</section>
+
+<!-- Courses Section -->
+<section class="courses">
+<div class="container">
+<div class="section-title" data-aos="fade-up">
+<h2>Ommabop kurslar</h2>
+<p>Siz uchun maxsus tanlangan kurslar</p>
+</div>
+<div class="courses-grid">
+{% for course in courses %}
+<div
+class="course-card"
+data-aos="fade-up"
+data-aos-delay="{{ loop.index * 100 }}"
+>
+<div class="course-icon">{{ course.icon }}</div>
+<h3>{{ course.title }}</h3>
+<p>{{ course.description[:100] }}...</p>
+<div class="course-footer">
+<span class="course-duration"
+><i class="far fa-calendar-alt"></i> {{ course.duration }}</span
+>
+<span class="course-price">{{ course.price }}</span>
+</div>
+<button
+class="btn btn-primary"
+style="width: 100%; margin-top: 1rem"
+onclick="selectCourse({{ course.id }}, '{{ course.title }}')"
+>
+Batafsil
+</button>
+</div>
+{% endfor %}
+</div>
+<div style="text-align: center; margin-top: 2rem">
+<a href="{{ url_for('courses') }}" class="btn btn-outline">Barcha kurslar</a>
+</div>
+</div>
+</section>
+
+<!-- About Section -->
+<section class="about">
+<div class="container">
+<div class="about-content">
+<div class="about-text" data-aos="fade-right">
+<h3>{{ about.title if about else 'Biz haqimizda' }}</h3>
+<p>
+{{ about.description_1 if about else '' }}
+</p>
+<p>
+{{ about.description_2 if about else '' }}
+</p>
+<ul class="about-features">
+{% for feature in about_features[:4] %}
+<li data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+<i class="{{ feature.icon }}"></i> {{ feature.title }}
+</li>
+{% else %}
+<li data-aos="fade-up" data-aos-delay="100">
+<i class="fas fa-check-circle"></i> Tajribali o'qituvchilar
+</li>
+<li data-aos="fade-up" data-aos-delay="200">
+<i class="fas fa-check-circle"></i> Zamonaviy o'quv xonalari
+</li>
+<li data-aos="fade-up" data-aos-delay="300">
+<i class="fas fa-check-circle"></i> Moslashuvchan jadval
+</li>
+<li data-aos="fade-up" data-aos-delay="400">
+<i class="fas fa-check-circle"></i> Sertifikat berish
+</li>
+{% endfor %}
+</ul>
+</div>
+<div class="about-image" data-aos="fade-left">
+<img
+src="{{ about.image_url if (about and about.image_url and about.image_url.startswith('http')) else (url_for('static', filename=about.image_url) if (about and about.image_url) else 'https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') }}"
+alt="{{ about.title if about else 'Biz haqimizda' }}"
+/>
+</div>
+</div>
+</div>
+</section>
+
+<!-- TEST: Filiallar va xarita bo'limi (TO'LIQ ISHLAYDI) -->
+<section class="branches" style="padding: 80px 0; background: var(--light)">
+<div class="container">
+<div class="section-title" data-aos="fade-up">
+<h2>Filiallarimiz</h2>
+<p>O'zingizga yaqin filialni tanlang va xaritada ko'ring</p>
+</div>
+
+<div class="branch-selector" data-aos="fade-up" data-aos-delay="100">
+<h3>
+<i
+class="fas fa-map-marked-alt"
+style="color: var(--secondary); margin-right: 10px"
+></i>
+Filialni tanlang:
+</h3>
+
+<!-- Filial tanlash tugmalari -->
+<div class="branch-buttons" id="branchButtons">
+<button class="branch-btn active" onclick="showAllBranches()">
+Barcha filiallar
+</button>
+{% for branch in branches %}
+<button
+class="branch-btn"
+onclick="showBranch({{ branch.id }})"
+data-branch-id="{{ branch.id }}"
+>
+{{ branch.name }}
+</button>
+{% endfor %}
+</div>
+
+<!-- Xarita -->
+<div id="branchMap"></div>
+
+<!-- Tanlangan filial haqida ma'lumot -->
+<div id="branchInfoPanel" class="branch-info-panel">
+<div class="branch-detail" id="branchDetail"></div>
+</div>
+</div>
+
+<!-- Filiallar ro'yxati (grid) -->
+<div class="branches-grid" id="branchesGrid">
+{% for branch in branches %}
+<div
+class="branch-card"
+onclick="showBranch({{ branch.id }})"
+style="cursor: pointer"
+data-aos="fade-up"
+data-aos-delay="{{ loop.index * 100 }}"
+>
+<h3>{{ branch.name }}</h3>
+<div class="branch-info">
+<p><i class="fas fa-map-marker-alt"></i> {{ branch.address }}</p>
+<p><i class="fas fa-phone"></i> {{ branch.phone }}</p>
+{% if branch.phone2 %}
+<p><i class="fas fa-phone"></i> {{ branch.phone2 }}</p>
+{% endif %}
+<p><i class="far fa-clock"></i> {{ branch.work_time }}</p>
+{% if branch.features %}
+<div style="margin-top: 10px">
+{% for feature in branch.features.split(',') %}
+<span class="feature-badge">{{ feature }}</span>
+{% endfor %}
+</div>
+{% endif %}
+</div>
+</div>
+{% endfor %}
+</div>
+</div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials">
+<div class="container">
+<div class="section-title" data-aos="fade-up">
+<h2>O'quvchilarimiz fikri</h2>
+<p>Ularning muvaffaqiyati - bizning g'ururimiz</p>
+</div>
+<div class="testimonials-grid">
+{% if testimonials %} {% for testimonial in testimonials %}
+<div
+class="testimonial-card"
+data-aos="zoom-in"
+data-aos-delay="{{ loop.index * 100 }}"
+>
+<div class="testimonial-rating" style="margin-bottom: 10px">
+{% for i in range(testimonial.rating) %}
+<i class="fas fa-star" style="color: gold"></i>
+{% endfor %} {% for i in range(5 - testimonial.rating) %}
+<i class="fas fa-star" style="color: #ddd"></i>
+{% endfor %}
+</div>
+<p class="testimonial-text">"{{ testimonial.text }}"</p>
+<div class="testimonial-author">
+<div class="author-avatar">{{ testimonial.name[0]|upper }}</div>
+<div class="author-info">
+<h4>{{ testimonial.name }}</h4>
+<p>{{ testimonial.position }}</p>
+</div>
+</div>
+</div>
+{% endfor %} {% else %}
+<div class="testimonial-card">
+<p class="testimonial-text">
+"Ingliz tili kurslarida o'qib, IELTS imtihonidan 7.5 ball oldim. O'qituvchilar
+juda professional!"
+</p>
+<div class="testimonial-author">
+<div class="author-avatar">S</div>
+<div class="author-info">
+<h4>Sarvar Aliyev</h4>
+<p>Ingliz tili kursi</p>
+</div>
+</div>
+</div>
+<div class="testimonial-card">
+<p class="testimonial-text">
+"Arab tilini 0 dan boshlab 6 oy ichida o'rgandim. Hozir Qur'onni tushunib o'qiy
+olaman."
+</p>
+<div class="testimonial-author">
+<div class="author-avatar">M</div>
+<div class="author-info">
+<h4>Madina Karimova</h4>
+<p>Arab tili kursi</p>
+</div>
+</div>
+</div>
+<div class="testimonial-card">
+<p class="testimonial-text">
+"Matematika kurslari farzandimning maktabdagi o'zlashtirishini sezilarli
+darajada yaxshiladi."
+</p>
+<div class="testimonial-author">
+<div class="author-avatar">A</div>
+<div class="author-info">
+<h4>Akmal Rahimov</h4>
+<p>Ota-ona</p>
+</div>
+</div>
+</div>
+{% endif %}
+</div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="container">
+<div class="footer-content">
+<div class="footer-section">
+<h3>IlmPlyus</h3>
+<p>Zamonaviy ta'lim markazi. 2010-yildan beri sifatli ta'lim xizmati.</p>
+</div>
+<div class="footer-section">
+<h3>Tezkor havolalar</h3>
+<ul>
+<li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
+<li><a href="{{ url_for('courses') }}">Kurslar</a></li>
+<li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
+<li><a href="{{ url_for('contact') }}">Aloqa</a></li>
+</ul>
+</div>
+<div class="footer-section">
+<h3>Bog'lanish</h3>
+<p><i class="fas fa-phone"></i> +998 90 123 45 67</p>
+<p><i class="fas fa-envelope"></i> info@ilmplyus.uz</p>
+<p><i class="fas fa-map-marker-alt"></i> Toshkent shahri</p>
+</div>
+</div>
+<div class="footer-bottom">
+<p>&copy; 2025 Ilm Plyus O‘quv. Barcha huquqlar himoyalangan.</p>
+</div>
+</div>
+</footer>
+
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+AOS.init({ duration: 1000, once: true });
+// Filiallar ma'lumotlarini JavaScript ga o'tkazish
+const branches = [
+    {% for branch in branches %}
+    {
+        id: {{ branch.id }},
+        name: "{{ branch.name }}",
+        address: "{{ branch.address }}",
+        phone: "{{ branch.phone }}",
+        phone2: "{{ branch.phone2 or '' }}",
+        email: "{{ branch.email or '' }}",
+        work_time: "{{ branch.work_time }}",
+        lat: {{ branch.latitude }},
+        lng: {{ branch.longitude }},
+        district: "{{ branch.district }}",
+        features: "{{ branch.features or '' }}".split(',').filter(f => f)
+    },
+    {% endfor %}
+];
+
+// Xaritani yaratish
+var map = L.map('branchMap').setView([41.3111, 69.2797], 11);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+// Markerlar uchun obyekt
+var markers = {};
+var currentMarker = null;
+
+// Barcha filiallar uchun markerlar qo'shish
+branches.forEach(function(branch) {
+    var marker = L.marker([branch.lat, branch.lng]).addTo(map);
+
+    // Popup ma'lumotlari
+    var popupContent = `
+        <b>${branch.name}</b><br>
+        📍 ${branch.address}<br>
+        📞 ${branch.phone}<br>
+        🕒 ${branch.work_time}<br>
+        ${branch.features.length > 0 ? '<br>✅ ' + branch.features.join(' • ') : ''}
+    `;
+
+    marker.bindPopup(popupContent);
+
+    marker.on('click', function() {
+        showBranchInfo(branch);
+    });
+
+    markers[branch.id] = marker;
+});
+
+// Barcha filiallarni ko'rsatish
+function showAllBranches() {
+    // Tugmalarni faollashtirish
+    document.querySelectorAll('.branch-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector('.branch-btn:first-child').classList.add('active');
+
+    // Barcha markerlarni ko'rsatish
+    map.setView([41.3111, 69.2797], 11);
+
+    // Info panelni yashirish
+    document.getElementById('branchInfoPanel').classList.remove('active');
+}
+
+// Bitta filialni ko'rsatish
+function showBranch(branchId) {
+    const branch = branches.find(b => b.id === branchId);
+    if (!branch) return;
+
+    // Tugmalarni faollashtirish
+    document.querySelectorAll('.branch-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.branchId == branchId) {
+            btn.classList.add('active');
+        }
+    });
+
+    // Xaritani filialga markazlashtirish
+    map.setView([branch.lat, branch.lng], 15);
+
+    // Markerni ochish
+    if (markers[branch.id]) {
+        markers[branch.id].openPopup();
+    }
+
+    // Filial ma'lumotlarini ko'rsatish
+    showBranchInfo(branch);
+}
+
+// Filial ma'lumotlarini panelda ko'rsatish
+function showBranchInfo(branch) {
+    const panel = document.getElementById('branchInfoPanel');
+    const detail = document.getElementById('branchDetail');
+
+    let featuresHtml = '';
+    if (branch.features && branch.features.length > 0) {
+        featuresHtml = '<div style="grid-column: 1/-1; margin-top: 10px;">';
+        branch.features.forEach(f => {
+            featuresHtml += `<span class="feature-badge">${f}</span>`;
+        });
+        featuresHtml += '</div>';
+    }
+
+    detail.innerHTML = `
+        <div style="grid-column: 1/-1;">
+            <h3 style="color: var(--primary); margin-bottom: 15px;">${branch.name}</h3>
+        </div>
+        <div class="branch-detail-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>${branch.address}</span>
+        </div>
+        <div class="branch-detail-item">
+            <i class="fas fa-phone"></i>
+            <span>${branch.phone}</span>
+        </div>
+        ${branch.phone2 ? `
+        <div class="branch-detail-item">
+            <i class="fas fa-phone"></i>
+            <span>${branch.phone2}</span>
+        </div>
+        ` : ''}
+        ${branch.email ? `
+        <div class="branch-detail-item">
+            <i class="fas fa-envelope"></i>
+            <span>${branch.email}</span>
+        </div>
+        ` : ''}
+        <div class="branch-detail-item">
+            <i class="far fa-clock"></i>
+            <span>${branch.work_time}</span>
+        </div>
+        <div class="branch-detail-item">
+            <i class="fas fa-map-pin"></i>
+            <span>Tuman: ${branch.district}</span>
+        </div>
+        ${featuresHtml}
+        <div style="grid-column: 1/-1; margin-top: 15px;">
+            <button class="btn btn-primary" onclick="selectBranch(${branch.id})" style="width: 100%;">
+                <i class="fas fa-check-circle"></i> Bu filialga yozilish
+            </button>
+        </div>
+    `;
+
+    panel.classList.add('active');
+
+    // Panelga scroll qilish
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Filialni tanlash
+function selectBranch(branchId) {
+    window.location.href = "{{ url_for('contact') }}?branch=" + branchId;
+}
+
+// Kursni tanlash
+function selectCourse(courseId, courseName) {
+    window.location.href = "{{ url_for('contact') }}?course=" + courseId;
+}
+
+// Ariza formasi
+function openApplicationForm() {
+    window.location.href = "{{ url_for('contact') }}";
+}
+
+// Mobile menu removed - handled in main.js
+
+// Sahifa yuklanganda
+window.onload = function() {
+    // URL dan branch parametrini olish
+    const urlParams = new URLSearchParams(window.location.search);
+    if (branchId) {
+        showBranch(parseInt(branchId));
+    }
+};
+</script>
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+  const swiper = new Swiper('.main-slider', {
+    loop: true,
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false,
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    effect: 'fade',
+    fadeEffect: {
+      crossFade: true
+    },
+  });
+
+  // Navbar Scroll effect
+  window.addEventListener('scroll', () => {
+    const header = document.querySelector('header');
+    if (window.scrollY > 50) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+</script>
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const swiper = new Swiper('.main-slider', {
+      loop: true,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      effect: 'fade',
+      fadeEffect: {
+        crossFade: true
+      },
+    });
+  });
+</script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
+</body>
+</html>

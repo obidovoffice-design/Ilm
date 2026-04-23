@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biz haqimizda - Ilm Plyus</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
+          </a>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
+          <li><a href="{{ url_for('courses') }}">Kurslar</a></li>
+          <li><a href="{{ url_for('news_list') }}">Yangiliklar</a></li>
+          <li>
+            <a href="{{ url_for('about') }}" class="active">Biz haqimizda</a>
+          </li>
+          <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
+        </ul>
+        <div class="nav-buttons">
+          <button id="theme-toggle" class="theme-toggle" title="Mavzuni o'zgartirish">
+            <i class="fas fa-moon"></i>
+          </button>
+          <a href="tel:+998901234567" class="btn btn-outline"
+            ><i class="fas fa-phone"></i> Qo'ng'iroq</a
+          >
+          <a href="#" class="btn btn-primary">Ariza qoldirish</a>
+        </div>
+        <div class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" style="padding: 100px 0 60px">
+        <div class="container">
+          <div class="hero-content" style="text-align: center">
+            <h1>{{ about.title if about else 'Biz haqimizda' }}</h1>
+            <p>{{ about.experience_years if about else '14' }} yillik tajriba, minglab bitiruvchilar va sifatli ta'lim</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="about" style="padding-top: 0">
+        <div class="container">
+          <div class="about-content">
+            <div class="about-text">
+              <h3>Ilm Plyus - bilim sari yo'l</h3>
+              <p>
+                {{ about.description_1 if about else '' }}
+              </p>
+              <p>
+                {{ about.description_2 if about else '' }}
+              </p>
+              <p>
+                {{ about.description_3 if about else '' }}
+              </p>
+            </div>
+            <div class="about-image">
+              <img
+                src="{{ about.image_url if (about and about.image_url and about.image_url.startswith('http')) else (url_for('static', filename=about.image_url) if (about and about.image_url) else 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') }}"
+                alt="{{ about.title if about else 'Biz haqimizda' }}"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="testimonials">
+        <div class="container">
+          <div class="section-title">
+            <h2>Nima uchun biz?</h2>
+            <p>Bizni tanlashning sabablari</p>
+          </div>
+          <div class="testimonials-grid">
+            {% for feature in about_features %}
+            <div class="testimonial-card">
+              <h3 style="color: var(--primary); margin-bottom: 1rem">
+                {{ feature.title }}
+              </h3>
+              <p>
+                {{ feature.description }}
+              </p>
+            </div>
+            {% else %}
+            <div class="testimonial-card">
+              <h3 style="color: var(--primary); margin-bottom: 1rem">
+                Tajriba
+              </h3>
+              <p>
+                14 yillik ta'lim sohasidagi tajriba va minglab muvaffaqiyatli
+                bitiruvchilar
+              </p>
+            </div>
+            <div class="testimonial-card">
+              <h3 style="color: var(--primary); margin-bottom: 1rem">
+                Malakali o'qituvchilar
+              </h3>
+              <p>
+                O'z sohasining yetuk mutaxassislari, muntazam malaka oshirib
+                boruvchi pedagog kadrlar
+              </p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>IlmPlyus</h3>
+            <p>
+              Zamonaviy ta'lim markazi. 2010-yildan beri sifatli ta'lim xizmati.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h3>Tezkor havolalar</h3>
+            <ul>
+              <li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
+              <li><a href="{{ url_for('courses') }}">Kurslar</a></li>
+              <li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
+              <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Bog'lanish</h3>
+            <p><i class="fas fa-phone"></i> +998 90 123 45 67</p>
+            <p><i class="fas fa-envelope"></i> info@ilmplyus.uz</p>
+            <p>
+              <i class="fas fa-map-marker-alt"></i> Toshkent sh., Chilonzor
+              tumani
+            </p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 Ilm Plyus O‘quv. Barcha huquqlar himoyalangan.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document
+        .querySelector(".menu-toggle")
+        .addEventListener("click", function () {
+          document.querySelector(".nav-menu").classList.toggle("active");
+        });
+    </script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
+</body>
+</html>

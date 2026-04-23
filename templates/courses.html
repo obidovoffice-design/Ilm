@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kurslar - Ilm Plyus</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
+          </a>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
+          <li><a href="{{ url_for('courses') }}" class="active">Kurslar</a></li>
+          <li><a href="{{ url_for('news_list') }}">Yangiliklar</a></li>
+          <li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
+          <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
+        </ul>
+        <div class="nav-buttons">
+          <button id="theme-toggle" class="theme-toggle" title="Mavzuni o'zgartirish">
+            <i class="fas fa-moon"></i>
+          </button>
+          <a href="tel:+998901234567" class="btn btn-outline"
+            ><i class="fas fa-phone"></i> Qo'ng'iroq</a
+          >
+          <a href="#" class="btn btn-primary">Ariza qoldirish</a>
+        </div>
+        <div class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" style="padding: 100px 0 60px">
+        <div class="container">
+          <div class="hero-content" style="text-align: center">
+            <h1>Barcha kurslar</h1>
+            <p>O'zingizga mos kursni tanlang va bilim olishni boshlang</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="courses" style="padding-top: 0">
+        <div class="container">
+          <div class="courses-grid">
+            {% for course in courses %}
+            <div class="course-card">
+              <div class="course-icon">{{ course.icon }}</div>
+              <h3>{{ course.title }}</h3>
+              <p>{{ course.description }}</p>
+              <div class="course-footer">
+                <span class="course-duration"
+                  ><i class="far fa-calendar-alt"></i> {{ course.duration
+                  }}</span
+                >
+                <span class="course-price">{{ course.price }}</span>
+              </div>
+              <a
+                href="#"
+                class="btn btn-primary"
+                style="width: 100%; margin-top: 1rem"
+                >Batafsil</a
+              >
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>IlmPlyus</h3>
+            <p>
+              Zamonaviy ta'lim markazi. 2010-yildan beri sifatli ta'lim xizmati.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h3>Tezkor havolalar</h3>
+            <ul>
+              <li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
+              <li><a href="{{ url_for('courses') }}">Kurslar</a></li>
+              <li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
+              <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Bog'lanish</h3>
+            <p><i class="fas fa-phone"></i> +998 90 123 45 67</p>
+            <p><i class="fas fa-envelope"></i> info@ilmplyus.uz</p>
+            <p>
+              <i class="fas fa-map-marker-alt"></i> Toshkent sh., Chilonzor
+              tumani
+            </p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 Ilm Plyus O‘quv. Barcha huquqlar himoyalangan.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document
+        .querySelector(".menu-toggle")
+        .addEventListener("click", function () {
+          document.querySelector(".nav-menu").classList.toggle("active");
+        });
+    </script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yangi yangilik qo'shish - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}" />
+  </head>
+  <body>
+    <div class="admin-container">
+      <div class="admin-sidebar">
+        <div class="admin-sidebar-header">
+          <img src="{{ url_for('static', filename='logo.png') }}" alt="Ilm Plyus Logo">
+          <p>Admin Panel</p>
+        </div>
+        <div class="admin-sidebar-menu">
+          <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item">
+            <i class="fas fa-dashboard"></i> Dashboard
+          </a>
+          <a href="{{ url_for('admin_courses') }}" class="admin-menu-item">
+            <i class="fas fa-book"></i> Kurslar
+          </a>
+          <a href="{{ url_for('admin_branches') }}" class="admin-menu-item">
+            <i class="fas fa-map-marker-alt"></i> Filiallar
+          </a>
+          <a href="{{ url_for('admin_testimonials') }}" class="admin-menu-item">
+            <i class="fas fa-star"></i> O'quvchilar fikriyati
+          </a>
+          <a href="{{ url_for('admin_news') }}" class="admin-menu-item active">
+            <i class="fas fa-newspaper"></i> Yangiliklar
+          </a>
+          <a href="{{ url_for('admin_applications') }}" class="admin-menu-item">
+            <i class="fas fa-envelope"></i> Arizalar
+          </a>
+          <a href="{{ url_for('admin_profile') }}" class="admin-menu-item">
+            <i class="fas fa-user-circle"></i> Profil
+          </a>
+          <a href="{{ url_for('admin_logout') }}" class="admin-menu-item">
+            <i class="fas fa-sign-out-alt"></i> Chiqish
+          </a>
+        </div>
+      </div>
+      <div class="admin-main">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h5>Yangi yangilik qo'shish</h5>
+          </div>
+          <div class="admin-card-body">
+            <form action="{{ url_for('admin_add_news') }}" method="POST">
+              <div class="admin-form-group">
+                <label>Sarlavha *</label>
+                <input type="text" name="title" class="admin-form-control" required placeholder="Yangilik sarlavhasini kiriting">
+              </div>
+              <div class="admin-form-group">
+                <label>Rasm URL</label>
+                <input type="text" name="image_url" class="admin-form-control" placeholder="Rasm URL manzilini kiriting">
+              </div>
+              <div class="admin-form-group">
+                <label>Matn *</label>
+                <textarea name="content" class="admin-form-control" rows="8" required placeholder="Yangilik matnini yozing..."></textarea>
+              </div>
+              <div class="admin-form-group" style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" name="is_active" id="is_active" checked>
+                <label for="is_active" style="margin-bottom: 0;">Faol</label>
+              </div>
+              <div style="margin-top: 25px;">
+                <button type="submit" class="admin-btn admin-btn-primary">
+                  <i class="fas fa-save"></i> Saqlash
+                </button>
+                <a href="{{ url_for('admin_news') }}" class="admin-btn admin-btn-outline" style="background: transparent; border: 1px solid #ccc; color: #666; margin-left: 10px;">
+                   Bekor qilish
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

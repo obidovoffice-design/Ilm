@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ news.title }} - Ilm Plyus</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
+          </a>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
+          <li><a href="{{ url_for('courses') }}">Kurslar</a></li>
+          <li><a href="{{ url_for('news_list') }}" class="active">Yangiliklar</a></li>
+          <li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
+          <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
+        </ul>
+        <div class="nav-buttons">
+<button id="theme-toggle" class="theme-toggle" title="Mavzuni o'zgartirish">
+  <i class="fas fa-moon"></i>
+</button>
+          <a href="tel:+998901234567" class="btn btn-outline"><i class="fas fa-phone"></i> Qo'ng'iroq</a>
+          <a href="{{ url_for('contact') }}" class="btn btn-primary">Ariza qoldirish</a>
+        </div>
+        <div class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" style="padding: 150px 0 80px;">
+        <div class="container">
+          <div class="hero-content" data-aos="fade-up">
+            <h1>{{ news.title }}</h1>
+            <p><i class="far fa-calendar-alt"></i> {{ news.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="about">
+        <div class="container">
+          <div class="about-content" style="flex-direction: column; align-items: flex-start;">
+            {% if news.image_url %}
+            <div data-aos="fade-up" style="width: 100%; max-height: 500px; overflow: hidden; border-radius: 20px; margin-bottom: 30px;">
+                <img src="{{ news.image_url }}" alt="{{ news.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            {% endif %}
+            <div class="about-text" data-aos="fade-up" style="width: 100%;">
+              <div style="font-size: 1.2rem; line-height: 1.8; color: var(--dark); white-space: pre-line;">
+                {{ news.content }}
+              </div>
+              <div style="margin-top: 40px;">
+                <a href="{{ url_for('news_list') }}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Orqaga qaytish</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>IlmPlyus</h3>
+            <p>Zamonaviy ta'lim markazi. 2010-yildan beri sifatli ta'lim xizmati.</p>
+          </div>
+          <div class="footer-section">
+            <h3>Tezkor havolalar</h3>
+            <ul>
+              <li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
+              <li><a href="{{ url_for('courses') }}">Kurslar</a></li>
+              <li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
+              <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Bog'lanish</h3>
+            <p><i class="fas fa-phone"></i> +998 90 123 45 67</p>
+            <p><i class="fas fa-envelope"></i> info@ilmplyus.uz</p>
+            <p><i class="fas fa-map-marker-alt"></i> Toshkent shahri</p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 Ilm Plyus O‘quv. Barcha huquqlar himoyalangan.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({ duration: 1000, once: true });
+      document.querySelector('.menu-toggle').addEventListener('click', function() {
+          document.querySelector('.nav-menu').classList.toggle('active');
+      });
+    </script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
+</body>
+</html>

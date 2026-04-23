@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biz haqimizda bloklari - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
+                <p>Admin Panel</p>
+            </div>
+            <div class="admin-sidebar-menu">
+                <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item">
+                    <i class="fas fa-dashboard"></i> Dashboard
+                </a>
+                <a href="{{ url_for('admin_sliders') }}" class="admin-menu-item">
+                    <i class="fas fa-images"></i> Slayderlar
+                </a>
+                <a href="{{ url_for('admin_courses') }}" class="admin-menu-item">
+                    <i class="fas fa-book"></i> Kurslar
+                </a>
+                <a href="{{ url_for('admin_branches') }}" class="admin-menu-item">
+                    <i class="fas fa-map-marker-alt"></i> Filiallar
+                </a>
+                <a href="{{ url_for('admin_about') }}" class="admin-menu-item active">
+                    <i class="fas fa-info-circle"></i> Biz haqimizda
+                </a>
+                <a href="{{ url_for('admin_testimonials') }}" class="admin-menu-item">
+                    <i class="fas fa-star"></i> O'quvchilar fikrlar
+                </a>
+                <a href="{{ url_for('admin_news') }}" class="admin-menu-item">
+                    <i class="fas fa-newspaper"></i> Yangiliklar
+                </a>
+                <a href="{{ url_for('admin_applications') }}" class="admin-menu-item">
+                    <i class="fas fa-envelope"></i> Arizalar
+                </a>
+                <a href="{{ url_for('admin_profile') }}" class="admin-menu-item">
+                    <i class="fas fa-user-circle"></i> Profil
+                </a>
+                <a href="{{ url_for('admin_logout') }}" class="admin-menu-item">
+                    <i class="fas fa-sign-out-alt"></i> Chiqish
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <div class="admin-navbar">
+                <div class="admin-navbar-title">
+                    <h4>Biz haqimizda bloklari ("Nima uchun biz?")</h4>
+                </div>
+                <div class="admin-navbar-user">
+                    <div class="admin-user-info">
+                        <div class="admin-user-name">{{ current_user.username }}</div>
+                        <div class="admin-user-role">Administrator</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="admin-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h5>Bloklar ro'yxati</h5>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="{{ url_for('admin_about') }}" class="admin-btn admin-btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Orqaga
+                        </a>
+                        <a href="{{ url_for('admin_add_about_feature') }}" class="admin-btn admin-btn-primary">
+                            <i class="fas fa-plus"></i> Yangi blok qo'shish
+                        </a>
+                    </div>
+                </div>
+                <div class="admin-card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Tartib</th>
+                                <th>Icon</th>
+                                <th>Sarlavha</th>
+                                <th>Status</th>
+                                <th>Amallar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for feature in features %}
+                            <tr>
+                                <td>{{ feature.order }}</td>
+                                <td><i class="{{ feature.icon }}"></i></td>
+                                <td>{{ feature.title }}</td>
+                                <td>
+                                    {% if feature.is_active %}
+                                    <span class="badge badge-success">Faol</span>
+                                    {% else %}
+                                    <span class="badge badge-danger">Faol emas</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('admin_edit_about_feature', feature_id=feature.id) }}" class="admin-btn admin-btn-primary admin-btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{{ url_for('admin_delete_about_feature', feature_id=feature.id) }}" class="admin-btn admin-btn-danger admin-btn-sm" onclick="return confirm('Haqiqatan ham ushbu blokni o\'chirmoqchimisiz?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Bloklar topilmadi.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

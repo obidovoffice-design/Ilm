@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arizalar - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}" />
+  </head>
+  <body>
+    <div class="admin-container">
+      <div class="admin-sidebar">
+        <div class="admin-sidebar-header">
+          <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
+          <p>Admin Panel</p>
+        </div>
+        <div class="admin-sidebar-menu">
+          <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item">
+            <i class="fas fa-dashboard"></i> Dashboard
+          </a>
+          <a href="{{ url_for('admin_sliders') }}" class="admin-menu-item">
+            <i class="fas fa-images"></i> Slayderlar
+          </a>
+          <a href="{{ url_for('admin_courses') }}" class="admin-menu-item">
+            <i class="fas fa-book"></i> Kurslar
+          </a>
+          <a href="{{ url_for('admin_branches') }}" class="admin-menu-item">
+            <i class="fas fa-map-marker-alt"></i> Filiallar
+          </a>
+          <a href="{{ url_for('admin_about') }}" class="admin-menu-item">
+            <i class="fas fa-info-circle"></i> Biz haqimizda
+          </a>
+          <a href="{{ url_for('admin_testimonials') }}" class="admin-menu-item">
+            <i class="fas fa-star"></i> O'quvchilar fikrlar
+          </a>
+          <a href="{{ url_for('admin_news') }}" class="admin-menu-item">
+            <i class="fas fa-newspaper"></i> Yangiliklar
+          </a>
+          <a href="{{ url_for('admin_applications') }}" class="admin-menu-item active">
+            <i class="fas fa-envelope"></i> Arizalar
+          </a>
+          <a href="{{ url_for('admin_profile') }}" class="admin-menu-item">
+            <i class="fas fa-user-circle"></i> Profil
+          </a>
+          <a href="{{ url_for('admin_logout') }}" class="admin-menu-item">
+            <i class="fas fa-sign-out-alt"></i> Chiqish
+          </a>
+        </div>
+      </div>
+      <div class="admin-main">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h5>Arizalar ro'yxati</h5>
+          </div>
+          <div class="admin-card-body">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>F.I.Sh.</th>
+                  <th>Telefon</th>
+                  <th>Kurs</th>
+                  <th>Filial</th>
+                  <th>Vaqt</th>
+                  <th>Status</th>
+                  <th>Amallar</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for app in applications %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ app.name }}</td>
+                  <td>{{ app.phone }}</td>
+                  <td>{% if app.course %}{{ app.course.title }}{% else %}-{% endif %}</td>
+                  <td>{% if app.branch %}{{ app.branch.name }}{% else %}-{% endif %}</td>
+                  <td>{{ app.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                  <td>
+                    {% if app.status == 'new' %}
+                    <span class="badge badge-info">Yangi</span>
+                    {% elif app.status == 'completed' %}
+                    <span class="badge badge-success">Yakunlangan</span>
+                    {% else %}
+                    <span class="badge badge-danger">Bekor qilingan</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{{ url_for('admin_view_application', app_id=app.id) }}" class="admin-btn admin-btn-primary admin-btn-sm" title="Ko'rish">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                    <form method="post" action="{{ url_for('admin_update_application', app_id=app.id) }}" style="display: inline-block;">
+                      <select name="status" class="admin-form-control admin-btn-sm" onchange="this.form.submit()">
+                        <option value="new" {% if app.status == 'new' %}selected{% endif %}>Yangi</option>
+                        <option value="completed" {% if app.status == 'completed' %}selected{% endif %}>Yakunlangan</option>
+                        <option value="cancelled" {% if app.status == 'cancelled' %}selected{% endif %}>Bekor qilingan</option>
+                      </select>
+                    </form>
+                    <a href="{{ url_for('admin_delete_application', app_id=app.id) }}" class="admin-btn admin-btn-danger admin-btn-sm" title="O'chirish" onclick="return confirm('Arizani o‘chirishga ishonchingiz komilmi?');">
+                      <i class="fas fa-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% else %}
+                <tr>
+                  <td colspan="8" style="text-align: center;">Arizalar topilmadi.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

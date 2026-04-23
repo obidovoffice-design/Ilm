@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biz haqimizda tahrirlash - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
+                <p>Admin Panel</p>
+            </div>
+            <div class="admin-sidebar-menu">
+                <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item">
+                    <i class="fas fa-dashboard"></i> Dashboard
+                </a>
+                <a href="{{ url_for('admin_sliders') }}" class="admin-menu-item">
+                    <i class="fas fa-images"></i> Slayderlar
+                </a>
+                <a href="{{ url_for('admin_courses') }}" class="admin-menu-item">
+                    <i class="fas fa-book"></i> Kurslar
+                </a>
+                <a href="{{ url_for('admin_branches') }}" class="admin-menu-item">
+                    <i class="fas fa-map-marker-alt"></i> Filiallar
+                </a>
+                <a href="{{ url_for('admin_about') }}" class="admin-menu-item active">
+                    <i class="fas fa-info-circle"></i> Biz haqimizda
+                </a>
+                <a href="{{ url_for('admin_testimonials') }}" class="admin-menu-item">
+                    <i class="fas fa-star"></i> O'quvchilar fikrlar
+                </a>
+                <a href="{{ url_for('admin_news') }}" class="admin-menu-item">
+                    <i class="fas fa-newspaper"></i> Yangiliklar
+                </a>
+                <a href="{{ url_for('admin_applications') }}" class="admin-menu-item">
+                    <i class="fas fa-envelope"></i> Arizalar
+                </a>
+                <a href="{{ url_for('admin_profile') }}" class="admin-menu-item">
+                    <i class="fas fa-user-circle"></i> Profil
+                </a>
+                <a href="{{ url_for('admin_logout') }}" class="admin-menu-item">
+                    <i class="fas fa-sign-out-alt"></i> Chiqish
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <div class="admin-navbar">
+                <div class="admin-navbar-title">
+                    <h4>Biz haqimizda tahrirlash</h4>
+                </div>
+                <div class="admin-navbar-user">
+                    <div class="admin-user-info">
+                        <div class="admin-user-name">{{ current_user.username }}</div>
+                        <div class="admin-user-role">Administrator</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="admin-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h5>Asosiy ma'lumotlar</h5>
+                    <a href="{{ url_for('admin_about_features') }}" class="admin-btn admin-btn-primary">
+                        <i class="fas fa-list"></i> Bloklarni boshqarish
+                    </a>
+                </div>
+                <div class="admin-card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="admin-form-group">
+                            <label>Sarlavha</label>
+                            <input type="text" name="title" class="admin-form-control" value="{{ about.title }}" required>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Tajriba yillari</label>
+                            <input type="number" name="experience_years" class="admin-form-control" value="{{ about.experience_years }}" required>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Tavsif 1 (Asosiy matn)</label>
+                            <textarea name="description_1" class="admin-form-control" rows="4">{{ about.description_1 }}</textarea>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Tavsif 2 (Ikkinchi paragraf)</label>
+                            <textarea name="description_2" class="admin-form-control" rows="3">{{ about.description_2 }}</textarea>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Tavsif 3 (Uchinchi paragraf - bizning nizom va qonunchilik)</label>
+                            <textarea name="description_3" class="admin-form-control" rows="3">{{ about.description_3 }}</textarea>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Rasm</label>
+                            {% if about.image_url %}
+                            <div style="margin-bottom: 10px;">
+                                <img src="{{ about.image_url if about.image_url.startswith('http') else url_for('static', filename=about.image_url) }}" alt="About Image" style="max-height: 200px; border-radius: 8px;">
+                            </div>
+                            {% endif %}
+                            <input type="file" name="image" class="admin-form-control">
+                            <small style="color: #666;">Yangi rasm tanlasangiz, eskisi o'chib ketadi.</small>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <button type="submit" class="admin-btn admin-btn-primary">
+                                <i class="fas fa-save"></i> Saqlash
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
