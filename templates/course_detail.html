@@ -32,7 +32,9 @@
           <li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
           <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
         </ul>
-        <div class="nav-buttons">
+          <button id="theme-toggle" class="theme-toggle" title="Mavzuni o'zgartirish">
+            <i class="fas fa-moon"></i>
+          </button>
           <a href="tel:+998901234567" class="btn btn-outline"
             ><i class="fas fa-phone"></i> Qo'ng'iroq</a
           >
@@ -157,7 +159,7 @@
       }
 
       .course-info-main {
-        background: white;
+        background: var(--white);
         padding: 40px;
         border-radius: 10px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -237,5 +239,7 @@
         }
       }
     </style>
-  </body>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
+</body>
 </html>
