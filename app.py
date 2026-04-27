@@ -9,8 +9,21 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ilmplyus-secret-key-2025'
 
 # Database configuration
-db_url = os.environ.get('DATABASE_URL', 'sqlite:///ilmplyus.db')
-if db_url.startswith('postgres://'):
+basedir = os.path.abspath(os.path.dirname(__file__))
+instance_path = os.path.join(basedir, 'instance')
+if not os.path.exists(instance_path):
+    try:
+        os.makedirs(instance_path)
+    except Exception as e:
+        print(f"Error creating instance directory: {e}")
+
+db_url = os.environ.get('DATABASE_URL')
+if not db_url:
+    # Absolute path is more reliable on Render
+    db_path = os.path.join(instance_path, 'ilmplyus.db')
+    db_url = f'sqlite:///{db_path}'
+elif db_url.startswith('postgres://'):
+    # Fix for newer SQLAlchemy versions
     db_url = db_url.replace('postgres://', 'postgresql://', 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
@@ -18,35 +31,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-# Create tables if they don't exist
-with app.app_context():
-    try:
-        db.create_all()
-    except Exception as e:
-        print(f"Error creating database tables: {e}")
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'admin_login'
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
-# ---- Global context (barcha templateda ishlaydi) ----
-@app.context_processor
-def inject_globals():
-    now = datetime.utcnow()
-    new_applications_count = 0
-    try:
-        new_applications_count = Application.query.filter_by(status='new').count()
-    except Exception:
-        pass
-    return dict(now=now, new_applications_count=new_applications_count)
-
-# ---------------------- MA'LUMOTLAR BAZASINI YARATISH ----------------------
-@app.cli.command("init-db")
-def init_db():
-    """Ma'lumotlar bazasini yaratish va admin qo'shish"""
+# ---------------------- AUTOMATIC DATABASE INITIALIZATION ----------------------
+def seed_database():
+    """Ma'lumotlar bazasini yaratish va admin qo'shish (Auto-seed)"""
     db.create_all()
 
     if not User.query.filter_by(username='admin').first():
@@ -57,7 +44,6 @@ def init_db():
             is_admin=True
         )
         db.session.add(admin)
-        db.session.commit()
         print("✅ Admin foydalanuvchi yaratildi: admin / admin123")
 
     if Course.query.count() == 0:
@@ -109,7 +95,40 @@ def init_db():
         print("✅ Test filiallar qo'shildi")
 
     db.session.commit()
-    print("🎉 Barcha ma'lumotlar bazasi muvaffaqiyatli yaratildi!")
+    print("🎉 Database initialized and seeded!")
+
+# Run initialization on startup
+with app.app_context():
+    try:
+        seed_database()
+    except Exception as e:
+        print(f"❌ Database initialization error: {e}")
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'admin_login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# ---- Global context (barcha templateda ishlaydi) ----
+@app.context_processor
+def inject_globals():
+    now = datetime.utcnow()
+    new_applications_count = 0
+    try:
+        new_applications_count = Application.query.filter_by(status='new').count()
+    except Exception:
+        pass
+    return dict(now=now, new_applications_count=new_applications_count)
+
+# ---------------------- MA'LUMOTLAR BAZASINI YARATISH ----------------------
+# ---------------------- CLI COMMANDS ----------------------
+@app.cli.command("init-db")
+def init_db_command():
+    """Ma'lumotlar bazasini yaratish va admin qo'shish (Manual CLI)"""
+    seed_database()
+    print("✅ init-db command executed successfully.")
 
 # ---------------------- ASOSIY SAHIFALAR ----------------------
 @app.route('/')
