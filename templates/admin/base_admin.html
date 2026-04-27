@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Admin Panel{% endblock %} — Ilm Plyus</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}" />
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="admin-container">
+
+  <!-- ===== SIDEBAR ===== -->
+  <div class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-header">
+      <h3>Ilm<span>Plyus</span></h3>
+      <p>Admin Panel</p>
+    </div>
+    <div class="admin-sidebar-menu">
+      <a href="{{ url_for('admin_dashboard') }}"
+         class="admin-menu-item {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+        <i class="fas fa-chart-line"></i> Dashboard
+      </a>
+      <a href="{{ url_for('admin_courses') }}"
+         class="admin-menu-item {% if request.endpoint in ['admin_courses','admin_add_course','admin_edit_course'] %}active{% endif %}">
+        <i class="fas fa-book"></i> Kurslar
+      </a>
+      <a href="{{ url_for('admin_branches') }}"
+         class="admin-menu-item {% if request.endpoint in ['admin_branches','admin_add_branch','admin_edit_branch'] %}active{% endif %}">
+        <i class="fas fa-map-marker-alt"></i> Filiallar
+      </a>
+      <a href="{{ url_for('admin_testimonials') }}"
+         class="admin-menu-item {% if request.endpoint in ['admin_testimonials','admin_add_testimonial','admin_edit_testimonial'] %}active{% endif %}">
+        <i class="fas fa-comments"></i> Fikrlar
+      </a>
+      <a href="{{ url_for('admin_applications') }}"
+         class="admin-menu-item {% if request.endpoint in ['admin_applications','admin_view_application'] %}active{% endif %}">
+        <i class="fas fa-inbox"></i> Arizalar
+        {% set new_count = new_applications_count | default(0) %}
+        {% if new_count > 0 %}
+          <span class="badge">{{ new_count }}</span>
+        {% endif %}
+      </a>
+      <a href="{{ url_for('admin_sliders') }}"
+         class="admin-menu-item {% if request.endpoint in ['admin_sliders','admin_add_slider','admin_edit_slider'] %}active{% endif %}">
+        <i class="fas fa-images"></i> Slayderlar
+      </a>
+      <a href="{{ url_for('admin_news') }}"
+         class="admin-menu-item {% if request.endpoint in ['admin_news','admin_add_news','admin_edit_news'] %}active{% endif %}">
+        <i class="fas fa-newspaper"></i> Yangiliklar
+      </a>
+      <a href="{{ url_for('admin_about_features') }}"
+         class="admin-menu-item {% if request.endpoint in ['admin_about_features','admin_add_about_feature','admin_edit_about_feature','admin_edit_about'] %}active{% endif %}">
+        <i class="fas fa-info-circle"></i> Biz haqimizda
+      </a>
+      <div class="admin-sidebar-divider"></div>
+      <a href="{{ url_for('index') }}" class="admin-menu-item" target="_blank">
+        <i class="fas fa-external-link-alt"></i> Saytni ko'rish
+      </a>
+      <a href="{{ url_for('admin_logout') }}" class="admin-menu-item admin-menu-logout">
+        <i class="fas fa-sign-out-alt"></i> Chiqish
+      </a>
+    </div>
+  </div>
+
+  <!-- ===== MAIN ===== -->
+  <div class="admin-main">
+
+    <!-- Top Navbar -->
+    <div class="admin-navbar">
+      <div class="admin-navbar-left">
+        <button class="admin-sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('open')">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="admin-navbar-title">
+          <h4>
+            <i class="{{ page_icon | default('fas fa-circle') }}" style="margin-right:10px; color:var(--admin-primary)"></i>
+            {% block page_title %}Dashboard{% endblock %}
+          </h4>
+        </div>
+      </div>
+      <div class="admin-navbar-user">
+        <div class="admin-user-info">
+          <div class="admin-user-name">{{ current_user.username }}</div>
+          <div class="admin-user-role">Administrator</div>
+        </div>
+        <div class="admin-user-avatar">{{ current_user.username[0]|upper }}</div>
+      </div>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="padding: 0 24px;">
+          {% for category, message in messages %}
+            <div class="admin-alert admin-alert-{{ category }}">
+              <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+              {{ message }}
+              <button class="admin-alert-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Page Content -->
+    <div class="admin-content">
+      {% block content %}{% endblock %}
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Sidebar toggle for mobile
+  document.addEventListener('click', function(e) {
+    const sidebar = document.getElementById('adminSidebar');
+    const toggle = document.querySelector('.admin-sidebar-toggle');
+    if (sidebar && toggle && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+      sidebar.classList.remove('open');
+    }
+  });
+</script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

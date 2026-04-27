@@ -1,141 +1,71 @@
-<!doctype html>
-<html lang="uz">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kurslar - Admin Panel</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='admin.css') }}"
-    />
-  </head>
-  <body>
-    <div class="admin-container">
-      <div class="admin-sidebar">
-        <div class="admin-sidebar-header">
-          <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
-          <p>Admin Panel</p>
-        </div>
-        <div class="admin-sidebar-menu">
-          <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item">
-            <i class="fas fa-dashboard"></i> Dashboard
-          </a>
-          <a href="{{ url_for('admin_sliders') }}" class="admin-menu-item">
-            <i class="fas fa-images"></i> Slayderlar
-          </a>
-          <a
-            href="{{ url_for('admin_courses') }}"
-            class="admin-menu-item active"
-          >
-            <i class="fas fa-book"></i> Kurslar
-          </a>
-          <a href="{{ url_for('admin_branches') }}" class="admin-menu-item">
-            <i class="fas fa-map-marker-alt"></i> Filiallar
-          </a>
-          <a href="{{ url_for('admin_about') }}" class="admin-menu-item">
-            <i class="fas fa-info-circle"></i> Biz haqimizda
-          </a>
-          <a href="{{ url_for('admin_testimonials') }}" class="admin-menu-item">
-            <i class="fas fa-star"></i> O'quvchilar fikrlar
-          </a>
-          <a href="{{ url_for('admin_news') }}" class="admin-menu-item">
-            <i class="fas fa-newspaper"></i> Yangiliklar
-          </a>
-          <a href="{{ url_for('admin_applications') }}" class="admin-menu-item">
-            <i class="fas fa-envelope"></i> Arizalar
-          </a>
-          <a href="{{ url_for('admin_profile') }}" class="admin-menu-item">
-            <i class="fas fa-user-circle"></i> Profil
-          </a>
-          <a href="{{ url_for('admin_logout') }}" class="admin-menu-item">
-            <i class="fas fa-sign-out-alt"></i> Chiqish
-          </a>
-        </div>
-      </div>
-      <div class="admin-main">
-        <div class="admin-card">
-          <div
-            class="admin-card-header"
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            "
-          >
-            <h5>Kurslar ro'yxati</h5>
-            <a
-              href="{{ url_for('admin_add_course') }}"
-              class="admin-btn admin-btn-primary"
-            >
-              <i class="fas fa-plus"></i> Yangi kurs
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Kurslar{% endblock %}
+{% block page_title %}Kurslar ro'yxati{% endblock %}
+{% set page_icon = "fas fa-book" %}
+
+{% block content %}
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h5><i class="fas fa-book" style="margin-right:8px"></i>Kurslar</h5>
+    <a href="{{ url_for('admin_add_course') }}" class="admin-btn admin-btn-primary">
+      <i class="fas fa-plus"></i> Yangi kurs
+    </a>
+  </div>
+  <div class="admin-card-body">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nomi</th>
+          <th>Kategoriya</th>
+          <th>Daraja</th>
+          <th>Davomiylik</th>
+          <th>Narxi</th>
+          <th>O'quvchilar</th>
+          <th>Holati</th>
+          <th>Amallar</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for course in courses %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td><strong>{{ course.icon }} {{ course.title }}</strong></td>
+          <td>{{ course.category }}</td>
+          <td>{{ course.level }}</td>
+          <td>{{ course.duration }}</td>
+          <td>{{ course.price }}</td>
+          <td>{{ course.students_count }}</td>
+          <td>
+            {% if course.is_active %}
+            <span class="badge badge-success">Faol</span>
+            {% else %}
+            <span class="badge badge-danger">Noaktiv</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('admin_edit_course', course_id=course.id) }}"
+               class="admin-btn admin-btn-primary admin-btn-sm" title="Tahrirlash">
+              <i class="fas fa-edit"></i>
             </a>
-          </div>
-          <div class="admin-card-body">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Nomi</th>
-                  <th>Kategoriya</th>
-                  <th>Daraja</th>
-                  <th>Davomiyligi</th>
-                  <th>Narxi</th>
-                  <th>Talabalar</th>
-                  <th>Holati</th>
-                  <th>Amallar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for course in courses %}
-                <tr>
-                  <td>{{ loop.index }}</td>
-                  <td>{{ course.title }}</td>
-                  <td>{{ course.category }}</td>
-                  <td>{{ course.level }}</td>
-                  <td>{{ course.duration }}</td>
-                  <td>{{ course.price }}</td>
-                  <td>{{ course.students_count }}</td>
-                  <td>
-                    {% if course.is_active %}
-                    <span class="badge badge-success">Aktiv</span>
-                    {% else %}
-                    <span class="badge badge-danger">Noaktiv</span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    <a
-                      href="{{ url_for('admin_edit_course', course_id=course.id) }}"
-                      class="admin-btn admin-btn-primary admin-btn-sm"
-                      ><i class="fas fa-edit"></i
-                    ></a>
-                    <a
-                      href="{{ url_for('admin_delete_course', course_id=course.id) }}"
-                      class="admin-btn admin-btn-danger admin-btn-sm"
-                      onclick="
-                        return confirm(
-                          'Kursni o‘chirishga ishonchingiz komilmi?',
-                        );
-                      "
-                      ><i class="fas fa-trash"></i
-                    ></a>
-                  </td>
-                </tr>
-                {% else %}
-                <tr>
-                  <td colspan="9" style="text-align: center">
-                    Kurslar topilmadi.
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </body>
-</html>
+            <a href="{{ url_for('admin_delete_course', course_id=course.id) }}"
+               class="admin-btn admin-btn-danger admin-btn-sm" title="O'chirish"
+               onclick="return confirm('Kursni o\'chirishga ishonchingiz komilmi?');">
+              <i class="fas fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="9" style="text-align:center;padding:40px;color:var(--admin-text-muted)">
+            <i class="fas fa-book" style="font-size:32px;opacity:0.3;margin-bottom:10px;display:block"></i>
+            Kurslar topilmadi.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,162 +1,133 @@
-<!doctype html>
-<html lang="uz">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Biz haqimizda - Ilm Plyus</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-  </head>
-  <body>
-    <header>
-      <nav>
-        <div class="logo">
-          <a href="{{ url_for('index') }}">
-            <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
-          </a>
-        </div>
-        <ul class="nav-menu">
-          <li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
-          <li><a href="{{ url_for('courses') }}">Kurslar</a></li>
-          <li><a href="{{ url_for('news_list') }}">Yangiliklar</a></li>
-          <li>
-            <a href="{{ url_for('about') }}" class="active">Biz haqimizda</a>
-          </li>
-          <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
-        </ul>
-        <div class="nav-buttons">
-          <button id="theme-toggle" class="theme-toggle" title="Mavzuni o'zgartirish">
-            <i class="fas fa-moon"></i>
-          </button>
-          <a href="tel:+998901234567" class="btn btn-outline"
-            ><i class="fas fa-phone"></i> Qo'ng'iroq</a
-          >
-          <a href="#" class="btn btn-primary">Ariza qoldirish</a>
-        </div>
-        <div class="menu-toggle">
-          <i class="fas fa-bars"></i>
-        </div>
-      </nav>
-    </header>
+{% extends "base.html" %}
 
-    <main>
-      <section class="hero" style="padding: 100px 0 60px">
-        <div class="container">
-          <div class="hero-content" style="text-align: center">
-            <h1>{{ about.title if about else 'Biz haqimizda' }}</h1>
-            <p>{{ about.experience_years if about else '14' }} yillik tajriba, minglab bitiruvchilar va sifatli ta'lim</p>
-          </div>
-        </div>
-      </section>
+{% block title %}Biz haqimizda - Ilm Plyus{% endblock %}
 
-      <section class="about" style="padding-top: 0">
-        <div class="container">
-          <div class="about-content">
-            <div class="about-text">
-              <h3>Ilm Plyus - bilim sari yo'l</h3>
-              <p>
-                {{ about.description_1 if about else '' }}
-              </p>
-              <p>
-                {{ about.description_2 if about else '' }}
-              </p>
-              <p>
-                {{ about.description_3 if about else '' }}
-              </p>
-            </div>
-            <div class="about-image">
-              <img
-                src="{{ about.image_url if (about and about.image_url and about.image_url.startswith('http')) else (url_for('static', filename=about.image_url) if (about and about.image_url) else 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') }}"
-                alt="{{ about.title if about else 'Biz haqimizda' }}"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+{% block content %}
+<!-- Page Hero -->
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-content" data-aos="fade-up">
+      <div class="breadcrumb">
+        <a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Bosh sahifa</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>Biz haqimizda</span>
+      </div>
+      <h1>{{ about.title if about else "Biz haqimizda" }}</h1>
+      <p>{{ about.experience_years if about else 14 }} yillik tajriba, minglab bitiruvchilar va sifatli ta'lim</p>
+    </div>
+  </div>
+</section>
 
-      <section class="testimonials">
-        <div class="container">
-          <div class="section-title">
-            <h2>Nima uchun biz?</h2>
-            <p>Bizni tanlashning sabablari</p>
-          </div>
-          <div class="testimonials-grid">
-            {% for feature in about_features %}
-            <div class="testimonial-card">
-              <h3 style="color: var(--primary); margin-bottom: 1rem">
-                {{ feature.title }}
-              </h3>
-              <p>
-                {{ feature.description }}
-              </p>
-            </div>
-            {% else %}
-            <div class="testimonial-card">
-              <h3 style="color: var(--primary); margin-bottom: 1rem">
-                Tajriba
-              </h3>
-              <p>
-                14 yillik ta'lim sohasidagi tajriba va minglab muvaffaqiyatli
-                bitiruvchilar
-              </p>
-            </div>
-            <div class="testimonial-card">
-              <h3 style="color: var(--primary); margin-bottom: 1rem">
-                Malakali o'qituvchilar
-              </h3>
-              <p>
-                O'z sohasining yetuk mutaxassislari, muntazam malaka oshirib
-                boruvchi pedagog kadrlar
-              </p>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-      </section>
-    </main>
+<!-- Stats Bar -->
+<section class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-box" data-aos="fade-up" data-aos-delay="100">
+        <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="stat-number">5000+</div>
+        <div class="stat-label">Muvaffaqiyatli bitiruvchilar</div>
+      </div>
+      <div class="stat-box" data-aos="fade-up" data-aos-delay="200">
+        <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+        <div class="stat-number">20+</div>
+        <div class="stat-label">Professional ustozlar</div>
+      </div>
+      <div class="stat-box" data-aos="fade-up" data-aos-delay="300">
+        <div class="stat-icon"><i class="fas fa-book-open"></i></div>
+        <div class="stat-number">15+</div>
+        <div class="stat-label">Ta'lim yo'nalishlari</div>
+      </div>
+      <div class="stat-box" data-aos="fade-up" data-aos-delay="400">
+        <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div class="stat-number">3+</div>
+        <div class="stat-label">Filiallar</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <footer>
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>IlmPlyus</h3>
-            <p>
-              Zamonaviy ta'lim markazi. 2010-yildan beri sifatli ta'lim xizmati.
-            </p>
-          </div>
-          <div class="footer-section">
-            <h3>Tezkor havolalar</h3>
-            <ul>
-              <li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
-              <li><a href="{{ url_for('courses') }}">Kurslar</a></li>
-              <li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
-              <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>Bog'lanish</h3>
-            <p><i class="fas fa-phone"></i> +998 90 123 45 67</p>
-            <p><i class="fas fa-envelope"></i> info@ilmplyus.uz</p>
-            <p>
-              <i class="fas fa-map-marker-alt"></i> Toshkent sh., Chilonzor
-              tumani
-            </p>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>&copy; 2025 Ilm Plyus O‘quv. Barcha huquqlar himoyalangan.</p>
+<!-- About Content -->
+<section class="about" style="padding-top:2rem">
+  <div class="container">
+    <div class="about-content">
+      <div class="about-text" data-aos="fade-right">
+        <div class="section-label">Bizning hikoyamiz</div>
+        <h3>Ilm Plyus — bilim sari yo'l</h3>
+        <p>{{ about.description_1 if about else "Biz 2010-yildan beri Toshkentda sifatli ta'lim xizmatini ko'rsatib kelmoqdamiz. O'n yildan ortiq tajribamiz va ming olti yuzdan ziyod muvaffaqiyatli bitiruvchilarimiz bizning g'ururushimizdir." }}</p>
+        <p>{{ about.description_2 if about else "Har bir o'quvchining muvaffaqiyati bizning asosiy maqsadimizdir. Shuning uchun biz individual yondashuvni va zamonaviy o'qitish metodlarini qo'llaymiz." }}</p>
+        {% if about and about.description_3 %}
+        <p>{{ about.description_3 }}</p>
+        {% endif %}
+      </div>
+      <div class="about-image" data-aos="fade-left">
+        <img src="{{ about.image_url if (about and about.image_url and about.image_url.startswith('http')) else (url_for('static', filename=about.image_url) if (about and about.image_url) else 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') }}"
+             alt="{{ about.title if about else 'Biz haqimizda' }}" />
+        <div class="about-badge">
+          <span class="badge-number">{{ about.experience_years if about else 14 }}+</span>
+          <span class="badge-text">Yillik tajriba</span>
         </div>
       </div>
-    </footer>
+    </div>
+  </div>
+</section>
 
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
-</body>
-</html>
+<!-- Why Us -->
+<section class="testimonials" style="background:var(--bg-secondary)">
+  <div class="container">
+    <div class="section-title" data-aos="fade-up">
+      <h2>Nima uchun biz?</h2>
+      <p>Bizni tanlashning asosiy sabablari</p>
+    </div>
+    <div class="features-grid">
+      {% for feature in about_features %}
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="{{ loop.index * 80 }}">
+        <div class="feature-icon">
+          <i class="{{ feature.icon or 'fas fa-star' }}"></i>
+        </div>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
+      </div>
+      {% else %}
+      <div class="feature-card" data-aos="fade-up">
+        <div class="feature-icon"><i class="fas fa-award"></i></div>
+        <h3>Tajribali o'qituvchilar</h3>
+        <p>O'z sohasining yetuk mutaxassislari — muntazam malaka oshirib boruvchi pedagog kadrlar</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-icon"><i class="fas fa-school"></i></div>
+        <h3>Zamonaviy o'quv muhiti</h3>
+        <p>Konditsioner, Wi-Fi, multimedia qurilmalar bilan jihozlangan zamonaviy sinflar</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-icon"><i class="fas fa-clock"></i></div>
+        <h3>Qulay jadval</h3>
+        <p>Ertalab, kunduz va kechki guruhlar — siz uchun qulay vaqtni tanlang</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="feature-icon"><i class="fas fa-certificate"></i></div>
+        <h3>Rasmiy sertifikat</h3>
+        <p>Kursni tugatganingizdan so'ng xalqaro standartlardagi sertifikat topshiriladi</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-card" data-aos="fade-up">
+      <h2>Bugundan boshlang!</h2>
+      <p>Ilm Plyus bilan kelajagingizni qurishga tayyor bo'ling</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <a href="{{ url_for('courses') }}" class="btn btn-primary">
+          <i class="fas fa-book-open"></i> Kurslarni ko'rish
+        </a>
+        <a href="{{ url_for('contact') }}" class="btn btn-outline-white">
+          <i class="fas fa-headset"></i> Bog'lanish
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

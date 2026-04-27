@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Ilm Plyus - Zamonaviy ta'lim markazi{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Ilm Plyus — Toshkentdagi zamonaviy til va fan o'quv markazi. Ingliz, Arab, Rus, Koreys, Xitoy tillari va boshqa kurslar.{% endblock %}">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Swiper -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="{% if request.endpoint == 'index' %}home-page{% endif %}">
+
+<!-- ===== NAVBAR ===== -->
+<header>
+  <nav>
+    <div class="logo">
+      <a href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
+      </a>
+    </div>
+    <ul class="nav-menu">
+      <li><a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}class="active"{% endif %}>Bosh sahifa</a></li>
+      <li><a href="{{ url_for('courses') }}" {% if request.endpoint == 'courses' %}class="active"{% endif %}>Kurslar</a></li>
+      <li><a href="{{ url_for('news_list') }}" {% if request.endpoint in ['news_list','news_detail'] %}class="active"{% endif %}>Yangiliklar</a></li>
+      <li><a href="{{ url_for('about') }}" {% if request.endpoint == 'about' %}class="active"{% endif %}>Biz haqimizda</a></li>
+      <li><a href="{{ url_for('contact') }}" {% if request.endpoint == 'contact' %}class="active"{% endif %}>Aloqa</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <button id="theme-toggle" class="theme-toggle" title="Mavzuni o'zgartirish">
+        <i class="fas fa-moon"></i>
+      </button>
+      <a href="tel:+998901234567" class="btn btn-outline nav-phone">
+        <i class="fas fa-phone"></i> Qo'ng'iroq
+      </a>
+      <a href="{{ url_for('contact') }}" class="btn btn-primary nav-cta">
+        Ro'yxatdan o'tish
+      </a>
+    </div>
+    <div class="menu-toggle">
+      <i class="fas fa-bars"></i>
+    </div>
+  </nav>
+</header>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+          <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+          {{ message }}
+          <button class="flash-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- ===== MAIN CONTENT ===== -->
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>IlmPlyus</h3>
+        <p>Zamonaviy ta'lim markazi. 2010-yildan beri sifatli ta'lim xizmati.</p>
+        <div class="social-links">
+          <a href="#" class="social-btn"><i class="fab fa-telegram"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h3>Tezkor havolalar</h3>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('index') }}"><i class="fas fa-chevron-right"></i> Bosh sahifa</a></li>
+          <li><a href="{{ url_for('courses') }}"><i class="fas fa-chevron-right"></i> Kurslar</a></li>
+          <li><a href="{{ url_for('about') }}"><i class="fas fa-chevron-right"></i> Biz haqimizda</a></li>
+          <li><a href="{{ url_for('news_list') }}"><i class="fas fa-chevron-right"></i> Yangiliklar</a></li>
+          <li><a href="{{ url_for('contact') }}"><i class="fas fa-chevron-right"></i> Aloqa</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Kurslar</h3>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('courses') }}?category=til"><i class="fas fa-chevron-right"></i> Til kurslari</a></li>
+          <li><a href="{{ url_for('courses') }}?category=fan"><i class="fas fa-chevron-right"></i> Fan kurslari</a></li>
+          <li><a href="{{ url_for('courses') }}?category=it"><i class="fas fa-chevron-right"></i> IT kurslari</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Bog'lanish</h3>
+        <ul class="footer-contact">
+          <li><i class="fas fa-phone"></i> <a href="tel:+998901234567">+998 90 123 45 67</a></li>
+          <li><i class="fas fa-envelope"></i> <a href="mailto:info@ilmplyus.uz">info@ilmplyus.uz</a></li>
+          <li><i class="fas fa-map-marker-alt"></i> Toshkent shahri</li>
+          <li><i class="far fa-clock"></i> Du-Sha: 09:00–21:00</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; {{ now.year if now else 2025 }} Ilm Plyus O'quv Markazi. Barcha huquqlar himoyalangan.</p>
+      <p><a href="{{ url_for('admin_login') }}" style="color:inherit;opacity:0.4;font-size:12px;">Admin</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
+<script>
+  AOS.init({ duration: 900, once: true, offset: 60 });
+</script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

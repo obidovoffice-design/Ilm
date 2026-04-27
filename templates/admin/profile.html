@@ -1,186 +1,96 @@
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profilni tahrirlash - Admin Panel</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
-</head>
-<body>
-    <div class="admin-container">
-        <!-- Sidebar -->
-        <div class="admin-sidebar">
-            <div class="admin-sidebar-header">
-                <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
-                <p>Admin Panel</p>
-            </div>
-            <div class="admin-sidebar-menu">
-                <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item">
-                    <i class="fas fa-dashboard"></i> Dashboard
-                </a>
-                <a href="{{ url_for('admin_sliders') }}" class="admin-menu-item">
-                    <i class="fas fa-images"></i> Slayderlar
-                </a>
-                <a href="{{ url_for('admin_courses') }}" class="admin-menu-item">
-                    <i class="fas fa-book"></i> Kurslar
-                </a>
-                <a href="{{ url_for('admin_branches') }}" class="admin-menu-item">
-                    <i class="fas fa-map-marker-alt"></i> Filiallar
-                </a>
-                <a href="{{ url_for('admin_about') }}" class="admin-menu-item">
-                    <i class="fas fa-info-circle"></i> Biz haqimizda
-                </a>
-                <a href="{{ url_for('admin_testimonials') }}" class="admin-menu-item">
-                    <i class="fas fa-star"></i> O'quvchilar fikrlar
-                </a>
-                <a href="{{ url_for('admin_news') }}" class="admin-menu-item">
-                    <i class="fas fa-newspaper"></i> Yangiliklar
-                </a>
-                <a href="{{ url_for('admin_applications') }}" class="admin-menu-item">
-                    <i class="fas fa-envelope"></i> Arizalar
-                </a>
-                <a href="{{ url_for('admin_profile') }}" class="admin-menu-item active">
-                    <i class="fas fa-user-circle"></i> Profil
-                </a>
-                <a href="{{ url_for('admin_logout') }}" class="admin-menu-item">
-                    <i class="fas fa-sign-out-alt"></i> Chiqish
-                </a>
-            </div>
+{% extends "admin/base_admin.html" %}
+{% block title %}Profil - Admin Panel{% endblock %}
+{% block page_title %}Profil boshqaruvi{% endblock %}
+
+{% block content %}
+<div class="profile-header-card" style="display:flex;align-items:center;gap:20px;background:white;padding:30px;border-radius:15px;box-shadow:var(--admin-shadow);margin-bottom:2rem">
+    <div class="profile-avatar-lg" style="width:100px;height:100px;background:var(--admin-primary);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:bold">
+        {{ current_user.username[0]|upper }}
+    </div>
+    <div class="profile-header-info">
+        <h2 style="margin:0;color:var(--admin-text)">{{ current_user.username }}</h2>
+        <p style="margin:5px 0;color:var(--admin-text-muted)"><i class="fas fa-shield-alt"></i> Tizim Administratori</p>
+        <p style="margin:0;color:var(--admin-text-muted)"><i class="fas fa-envelope"></i> {{ current_user.email }}</p>
+    </div>
+</div>
+
+<div class="admin-form-row">
+    <!-- Shaxsiy ma'lumotlar -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h5><i class="fas fa-user-edit" style="margin-right:8px"></i>Shaxsiy ma'lumotlar</h5>
         </div>
-
-        <!-- Main Content -->
-        <div class="admin-main">
-            <div class="admin-navbar">
-                <div class="admin-navbar-title">
-                    <h4>Profil boshqaruvi</h4>
+        <div class="admin-card-body">
+            <form method="POST">
+                <div class="admin-form-group">
+                    <label>Foydalanuvchi nomi</label>
+                    <input type="text" name="username" class="admin-form-control" value="{{ current_user.username }}" required>
                 </div>
-                <div class="admin-navbar-user">
-                    <div class="admin-user-info">
-                        <div class="admin-user-name">{{ current_user.username }}</div>
-                        <div class="admin-user-role">Administrator</div>
-                    </div>
+                <div class="admin-form-group">
+                    <label>Email manzil</label>
+                    <input type="email" name="email" class="admin-form-control" value="{{ current_user.email }}" required>
                 </div>
-            </div>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} admin-flash-message {{ 'success' if category == 'success' else 'danger' }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            <div class="profile-header-card">
-                <div class="profile-avatar-lg">
-                    {{ current_user.username[0]|upper }}
+                <div style="margin-top:20px">
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        <i class="fas fa-sync-alt"></i> Ma'lumotlarni yangilash
+                    </button>
                 </div>
-                <div class="profile-header-info">
-                    <h2>{{ current_user.username }}</h2>
-                    <p><i class="fas fa-shield-alt"></i> Tizim Administratori</p>
-                    <p><i class="fas fa-envelope"></i> {{ current_user.email }}</p>
-                </div>
-            </div>
-
-            <div class="profile-container">
-                <!-- Left Column: Settings -->
-                <div class="profile-settings">
-                    <div class="admin-card animate-up">
-                        <div class="admin-card-header">
-                            <h5 class="profile-section-title"><i class="fas fa-user-edit"></i> Shaxsiy ma'lumotlar</h5>
-                        </div>
-                        <div class="admin-card-body">
-                            <form method="POST">
-                                <div class="admin-form-group">
-                                    <label>Foydalanuvchi nomi</label>
-                                    <input type="text" name="username" class="admin-form-control" value="{{ current_user.username }}" required>
-                                </div>
-                                <div class="admin-form-group">
-                                    <label>Email manzil</label>
-                                    <input type="email" name="email" class="admin-form-control" value="{{ current_user.email }}" required>
-                                </div>
-                                <div style="margin-top: 20px;">
-                                    <button type="submit" class="admin-btn admin-btn-primary">
-                                        <i class="fas fa-sync-alt"></i> Ma'lumotlarni yangilash
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="admin-card animate-up">
-                        <div class="admin-card-header">
-                            <h5 class="profile-section-title"><i class="fas fa-lock"></i> Xavfsizlik</h5>
-                        </div>
-                        <div class="admin-card-body">
-                            <form method="POST">
-                                <div class="admin-form-group">
-                                    <label>Yangi parol</label>
-                                    <input type="password" name="new_password" class="admin-form-control" placeholder="O'zgartirish uchun kiriting...">
-                                    <small style="color: var(--admin-gray); display: block; margin-top: 5px;">
-                                        Parolni o'zgartirish shart bo'lmasa bo'sh qoldiring.
-                                    </small>
-                                </div>
-                                <div style="margin-top: 20px;">
-                                    <button type="submit" class="admin-btn admin-btn-danger">
-                                        <i class="fas fa-key"></i> Parolni yangilash
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Column: System Info & Logs -->
-                <div class="profile-stats">
-                    <div class="admin-card animate-up">
-                        <div class="admin-card-header">
-                            <h5 class="profile-section-title"><i class="fas fa-server"></i> Tizim ma'lumotlari</h5>
-                        </div>
-                        <div class="admin-card-body">
-                            <table class="profile-info-table">
-                                <tr>
-                                    <td class="profile-info-label">ID:</td>
-                                    <td class="profile-info-value">#{{ current_user.id }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="profile-info-label">Ro'yxatdan o'tgan:</td>
-                                    <td class="profile-info-value">{{ current_user.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="profile-info-label">Roli:</td>
-                                    <td class="profile-info-value"><span class="badge badge-success">Administrator</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="profile-info-label">Holati:</td>
-                                    <td class="profile-info-value"><span class="badge badge-success">Faol</span></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="admin-card animate-up" style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);">
-                        <div class="admin-card-header">
-                            <h5 class="profile-section-title"><i class="fas fa-bolt"></i> Tezkor ma'lumotlar</h5>
-                        </div>
-                        <div class="admin-card-body">
-                            <div style="display: flex; flex-direction: column; gap: 15px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: 8px; border-left: 4px solid var(--admin-primary);">
-                                    <span style="font-size: 14px; color: var(--admin-gray);">Kurslar soni</span>
-                                    <span style="font-weight: 700; color: var(--admin-primary);">Aylik statistikaga muvofiq</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: 8px; border-left: 4px solid var(--admin-secondary);">
-                                    <span style="font-size: 14px; color: var(--admin-gray);">Xavfsizlik darajasi</span>
-                                    <span style="font-weight: 700; color: var(--admin-secondary);">Yuqori</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
-</body>
-</html>
+
+    <!-- Xavfsizlik -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h5><i class="fas fa-lock" style="margin-right:8px"></i>Xavfsizlik</h5>
+        </div>
+        <div class="admin-card-body">
+            <form method="POST">
+                <!-- Hidden inputs to maintain context if needed, but app.py handles it -->
+                <input type="hidden" name="username" value="{{ current_user.username }}">
+                <input type="hidden" name="email" value="{{ current_user.email }}">
+                
+                <div class="admin-form-group">
+                    <label>Yangi parol</label>
+                    <input type="password" name="new_password" class="admin-form-control" placeholder="O'zgartirish uchun kiriting...">
+                    <small style="color:var(--admin-text-muted);display:block;margin-top:5px">
+                        Parolni o'zgartirish shart bo'lmasa bo'sh qoldiring.
+                    </small>
+                </div>
+                <div style="margin-top:20px">
+                    <button type="submit" class="admin-btn admin-btn-danger">
+                        <i class="fas fa-key"></i> Parolni yangilash
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Tizim ma'lumotlari -->
+<div class="admin-card" style="margin-top:2rem">
+    <div class="admin-card-header">
+        <h5><i class="fas fa-server" style="margin-right:8px"></i>Tizim ma'lumotlari</h5>
+    </div>
+    <div class="admin-card-body">
+        <table class="admin-table" style="max-width:500px">
+            <tr>
+                <td style="color:var(--admin-text-muted)">ID:</td>
+                <td><strong>#{{ current_user.id }}</strong></td>
+            </tr>
+            <tr>
+                <td style="color:var(--admin-text-muted)">Ro'yxatdan o'tgan:</td>
+                <td>{{ current_user.created_at.strftime('%d.%m.%Y %H:%M') if current_user.created_at else '—' }}</td>
+            </tr>
+            <tr>
+                <td style="color:var(--admin-text-muted)">Roli:</td>
+                <td><span class="badge badge-success">Administrator</span></td>
+            </tr>
+            <tr>
+                <td style="color:var(--admin-text-muted)">Holati:</td>
+                <td><span class="badge badge-success">Faol</span></td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

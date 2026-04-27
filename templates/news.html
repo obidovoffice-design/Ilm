@@ -1,118 +1,80 @@
-<!doctype html>
-<html lang="uz">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Yangiliklar - Ilm Plyus</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-  </head>
-  <body>
-    <header>
-      <nav>
-        <div class="logo">
-          <a href="{{ url_for('index') }}">
-            <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
+{% extends "base.html" %}
+
+{% block title %}Yangiliklar - Ilm Plyus{% endblock %}
+
+{% block content %}
+<!-- Page Hero -->
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-content" data-aos="fade-up">
+      <div class="breadcrumb">
+        <a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Bosh sahifa</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>Yangiliklar</span>
+      </div>
+      <h1>Yangiliklar</h1>
+      <p>O'quv markazimiz hayotidagi so'nggi voqealar va yangiliklar</p>
+    </div>
+  </div>
+</section>
+
+<!-- News Grid -->
+<section class="courses" style="padding-top:2rem">
+  <div class="container">
+    <div class="courses-grid">
+      {% if news %}
+        {% for item in news %}
+        <div class="course-card news-card" data-aos="fade-up" data-aos-delay="{{ loop.index * 80 }}">
+          {% if item.image_url %}
+          <div class="news-image">
+            <img src="{{ item.image_url if item.image_url.startswith('http') else url_for('static', filename=item.image_url) }}"
+                 alt="{{ item.title }}">
+          </div>
+          {% else %}
+          <div class="course-icon"><i class="fas fa-newspaper"></i></div>
+          {% endif %}
+          <div class="news-meta">
+            <span><i class="far fa-calendar-alt"></i> {{ item.created_at.strftime('%d.%m.%Y') }}</span>
+          </div>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.content[:150] }}...</p>
+          <a href="{{ url_for('news_detail', news_id=item.id) }}" class="btn btn-primary"
+             style="width:100%;margin-top:1rem">
+            Batafsil o'qish <i class="fas fa-arrow-right" style="margin-left:6px"></i>
           </a>
         </div>
-        <ul class="nav-menu">
-          <li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
-          <li><a href="{{ url_for('courses') }}">Kurslar</a></li>
-          <li><a href="{{ url_for('news_list') }}" class="active">Yangiliklar</a></li>
-          <li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
-          <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
-        </ul>
-        <div class="nav-buttons">
-<button id="theme-toggle" class="theme-toggle" title="Mavzuni o'zgartirish">
-  <i class="fas fa-moon"></i>
-</button>
-          <a href="tel:+998901234567" class="btn btn-outline"><i class="fas fa-phone"></i> Qo'ng'iroq</a>
-          <a href="{{ url_for('contact') }}" class="btn btn-primary">Ariza qoldirish</a>
-        </div>
-        <div class="menu-toggle">
-          <i class="fas fa-bars"></i>
-        </div>
-      </nav>
-    </header>
-
-    <main>
-      <section class="hero" style="padding: 150px 0 80px;">
-        <div class="container">
-          <div class="hero-content" data-aos="fade-up">
-            <h1>Yangiliklar</h1>
-            <p>O'quv markazimiz hayotidagi so'nggi voqealar va yangiliklar bilan tanishing.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="courses">
-        <div class="container">
-          <div class="courses-grid">
-            {% if news_items %}
-              {% for item in news_items %}
-              <div class="course-card" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
-                {% if item.image_url %}
-                <div style="height: 200px; overflow: hidden; border-radius: 10px; margin-bottom: 20px;">
-                    <img src="{{ item.image_url }}" alt="{{ item.title }}" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                {% else %}
-                <div class="course-icon"><i class="fas fa-newspaper"></i></div>
-                {% endif %}
-                <h3>{{ item.title }}</h3>
-                <p>{{ item.content[:150] }}...</p>
-                <div class="course-footer">
-                  <span class="course-duration"><i class="far fa-calendar-alt"></i> {{ item.created_at.strftime('%d.%m.%Y') }}</span>
-                </div>
-                <a href="{{ url_for('news_detail', news_id=item.id) }}" class="btn btn-primary" style="width: 100%; margin-top: 1rem; text-align: center;">Batafsil</a>
-              </div>
-              {% endfor %}
-            {% else %}
-            <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                <p>Hozircha yangiliklar yo'q.</p>
-            </div>
-            {% endif %}
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <!-- Footer content same as index.html -->
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>IlmPlyus</h3>
-            <p>Zamonaviy ta'lim markazi. 2010-yildan beri sifatli ta'lim xizmati.</p>
-          </div>
-          <div class="footer-section">
-            <h3>Tezkor havolalar</h3>
-            <ul>
-              <li><a href="{{ url_for('index') }}">Bosh sahifa</a></li>
-              <li><a href="{{ url_for('courses') }}">Kurslar</a></li>
-              <li><a href="{{ url_for('about') }}">Biz haqimizda</a></li>
-              <li><a href="{{ url_for('contact') }}">Aloqa</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>Bog'lanish</h3>
-            <p><i class="fas fa-phone"></i> +998 90 123 45 67</p>
-            <p><i class="fas fa-envelope"></i> info@ilmplyus.uz</p>
-            <p><i class="fas fa-map-marker-alt"></i> Toshkent shahri</p>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>&copy; 2025 Ilm Plyus O‘quv. Barcha huquqlar himoyalangan.</p>
-        </div>
+        {% endfor %}
+      {% else %}
+      <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-muted)">
+        <i class="fas fa-newspaper" style="font-size:48px;margin-bottom:16px;opacity:0.3"></i>
+        <p>Hozircha yangiliklar yo'q</p>
       </div>
-    </footer>
+      {% endif %}
+    </div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-      AOS.init({ duration: 1000, once: true });
-    </script>
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
-</body>
-</html>
+    <!-- Pagination -->
+    {% if pagination and pagination.pages > 1 %}
+    <div class="pagination" data-aos="fade-up">
+      {% if pagination.has_prev %}
+      <a href="{{ url_for('news_list', page=pagination.prev_num) }}" class="page-btn">
+        <i class="fas fa-chevron-left"></i>
+      </a>
+      {% endif %}
+      {% for page_num in pagination.iter_pages() %}
+        {% if page_num %}
+        <a href="{{ url_for('news_list', page=page_num) }}"
+           class="page-btn {% if page_num == pagination.page %}active{% endif %}">{{ page_num }}</a>
+        {% else %}
+        <span class="page-dots">...</span>
+        {% endif %}
+      {% endfor %}
+      {% if pagination.has_next %}
+      <a href="{{ url_for('news_list', page=pagination.next_num) }}" class="page-btn">
+        <i class="fas fa-chevron-right"></i>
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

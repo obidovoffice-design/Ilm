@@ -1,197 +1,79 @@
-<!doctype html>
-<html lang="uz">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Yangi kurs qo'shish - Admin Panel</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='admin.css') }}"
-    />
-  </head>
-  <body>
-    <div class="admin-container">
-      <div class="admin-sidebar">
-        <div class="admin-sidebar-header">
-          <img src="{{ url_for('static', filename='logo.png') }}" alt="Ilm Plyus Logo">
-          <p>Admin Panel</p>
+{% extends "admin/base_admin.html" %}
+{% block title %}Yangi kurs{% endblock %}
+{% block page_title %}Yangi kurs qo'shish{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h5><i class="fas fa-plus-circle" style="margin-right:8px"></i>Kurs ma'lumotlari</h5>
+    <a href="{{ url_for('admin_courses') }}" class="admin-btn admin-btn-secondary">
+      <i class="fas fa-arrow-left"></i> Orqaga
+    </a>
+  </div>
+  <div class="admin-card-body">
+    <form method="POST">
+      <div class="admin-form-group">
+        <label>Kurs nomi *</label>
+        <input type="text" name="title" class="admin-form-control" required placeholder="Masalan: Ingliz tili"/>
+      </div>
+      <div class="admin-form-group">
+        <label>Kurs tavsifi *</label>
+        <textarea name="description" class="admin-form-control" rows="4" required
+                  placeholder="Kurs haqida batafsil ma'lumot..."></textarea>
+      </div>
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label>Davomiyligi *</label>
+          <input type="text" name="duration" class="admin-form-control" required placeholder="3 oy"/>
         </div>
-        <div class="admin-sidebar-menu">
-          <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item">
-            <i class="fas fa-dashboard"></i> Dashboard
-          </a>
-          <a
-            href="{{ url_for('admin_courses') }}"
-            class="admin-menu-item active"
-          >
-            <i class="fas fa-book"></i> Kurslar
-          </a>
-          <a href="{{ url_for('admin_branches') }}" class="admin-menu-item">
-            <i class="fas fa-map-marker-alt"></i> Filiallar
-          </a>
-          <a href="{{ url_for('admin_testimonials') }}" class="admin-menu-item">
-            <i class="fas fa-star"></i> O'quvchilar fikriyati
-          </a>
-          <a href="{{ url_for('admin_news') }}" class="admin-menu-item">
-            <i class="fas fa-newspaper"></i> Yangiliklar
-          </a>
-          <a href="{{ url_for('admin_applications') }}" class="admin-menu-item">
-            <i class="fas fa-envelope"></i> Arizalar
-          </a>
-          <a href="{{ url_for('admin_profile') }}" class="admin-menu-item">
-            <i class="fas fa-user-circle"></i> Profil
-          </a>
-          <a href="{{ url_for('admin_logout') }}" class="admin-menu-item">
-            <i class="fas fa-sign-out-alt"></i> Chiqish
-          </a>
+        <div class="admin-form-group">
+          <label>Narxi *</label>
+          <input type="text" name="price" class="admin-form-control" required placeholder="450 000 so'm/oy"/>
         </div>
       </div>
-
-      <div class="admin-main">
-        <div class="admin-navbar">
-          <div class="admin-navbar-title">
-            <h4>Yangi kurs qo'shish</h4>
-          </div>
-          <div class="admin-navbar-user">
-            <div class="admin-user-info">
-              <div class="admin-user-name">{{ current_user.username }}</div>
-              <div class="admin-user-role">Administrator</div>
-            </div>
-            <div class="admin-user-avatar">
-              {{ current_user.username[0]|upper }}
-            </div>
-          </div>
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label>Belgisi (emoji) *</label>
+          <input type="text" name="icon" class="admin-form-control" required placeholder="🇬🇧"/>
+          <small class="admin-form-hint">Masalan: 🇬🇧 🇸🇦 🧮 💻</small>
         </div>
-
-        {% with messages = get_flashed_messages(with_categories=true) %} {% if
-        messages %} {% for category, message in messages %}
-        <div
-          class="admin-flash-message {{ 'success' if category == 'success' else 'danger' }}"
-        >
-          {{ message }}
-        </div>
-        {% endfor %} {% endif %} {% endwith %}
-
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <h5>Kurs ma'lumotlari</h5>
-          </div>
-          <div class="admin-card-body">
-            <form method="POST" action="{{ url_for('admin_add_course') }}">
-              <div class="admin-form-group">
-                <label>Kurs nomi *</label>
-                <input
-                  type="text"
-                  name="title"
-                  class="admin-form-control"
-                  required
-                  placeholder="Masalan: Ingliz tili"
-                />
-              </div>
-
-              <div class="admin-form-group">
-                <label>Kurs haqida (tavsif) *</label>
-                <textarea
-                  name="description"
-                  class="admin-form-control"
-                  rows="4"
-                  required
-                  placeholder="Kurs haqida batafsil ma'lumot..."
-                ></textarea>
-              </div>
-
-              <div class="admin-form-row">
-                <div class="admin-form-group">
-                  <label>Davomiyligi *</label>
-                  <input
-                    type="text"
-                    name="duration"
-                    class="admin-form-control"
-                    required
-                    placeholder="3 oy"
-                  />
-                </div>
-                <div class="admin-form-group">
-                  <label>Narxi *</label>
-                  <input
-                    type="text"
-                    name="price"
-                    class="admin-form-control"
-                    required
-                    placeholder="450 000 so'm/oy"
-                  />
-                </div>
-              </div>
-
-              <div class="admin-form-row">
-                <div class="admin-form-group">
-                  <label>Belgisi (icon) *</label>
-                  <input
-                    type="text"
-                    name="icon"
-                    class="admin-form-control"
-                    required
-                    placeholder="🇬🇧, 🇸🇦, 🧮"
-                  />
-                  <small>Masalan: 🇬🇧, 🇸🇦, 🧮</small>
-                </div>
-                <div class="admin-form-group">
-                  <label>Kategoriya *</label>
-                  <select name="category" class="admin-form-control" required>
-                    <option value="til">Til kurslari</option>
-                    <option value="fan">Aniq fanlar</option>
-                    <option value="dasturlash">Dasturlash</option>
-                    <option value="boshqa">Boshqa</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="admin-form-row">
-                <div class="admin-form-group">
-                  <label>Darajasi *</label>
-                  <select name="level" class="admin-form-control" required>
-                    <option value="Boshlang'ich">Boshlang'ich</option>
-                    <option value="O'rta">O'rta</option>
-                    <option value="Ilg'or">Ilg'or</option>
-                    <option value="Barcha darajalar">Barcha darajalar</option>
-                  </select>
-                </div>
-                <div class="admin-form-group">
-                  <label>O'quvchilar soni</label>
-                  <input
-                    type="number"
-                    name="students_count"
-                    class="admin-form-control"
-                    value="0"
-                  />
-                </div>
-              </div>
-
-              <div class="admin-form-group">
-                <label style="display: flex; align-items: center; gap: 10px">
-                  <input type="checkbox" name="is_active" checked /> Faol kurs
-                </label>
-              </div>
-
-              <div style="display: flex; gap: 10px; margin-top: 20px">
-                <button type="submit" class="admin-btn admin-btn-primary">
-                  <i class="fas fa-save"></i> Saqlash
-                </button>
-                <a
-                  href="{{ url_for('admin_courses') }}"
-                  class="admin-btn admin-btn-danger"
-                >
-                  Bekor qilish
-                </a>
-              </div>
-            </form>
-          </div>
+        <div class="admin-form-group">
+          <label>Kategoriya *</label>
+          <select name="category" class="admin-form-control" required>
+            <option value="til">Til kurslari</option>
+            <option value="fan">Aniq fanlar</option>
+            <option value="it">IT / Dasturlash</option>
+            <option value="boshqa">Boshqa</option>
+          </select>
         </div>
       </div>
-    </div>
-  </body>
-</html>
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label>Daraja *</label>
+          <select name="level" class="admin-form-control" required>
+            <option value="Boshlang'ich">Boshlang'ich</option>
+            <option value="O'rta">O'rta</option>
+            <option value="Ilg'or">Ilg'or</option>
+            <option value="Barcha darajalar">Barcha darajalar</option>
+          </select>
+        </div>
+        <div class="admin-form-group">
+          <label>O'quvchilar soni</label>
+          <input type="number" name="students_count" class="admin-form-control" value="0" min="0"/>
+        </div>
+      </div>
+      <div class="admin-form-group">
+        <label class="admin-checkbox-label">
+          <input type="checkbox" name="is_active" checked/> Faol kurs
+        </label>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button type="submit" class="admin-btn admin-btn-primary">
+          <i class="fas fa-save"></i> Saqlash
+        </button>
+        <a href="{{ url_for('admin_courses') }}" class="admin-btn admin-btn-secondary">Bekor qilish</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,259 +1,128 @@
-<!doctype html>
-<html lang="uz">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Panel - Ilm Plyus</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='admin.css') }}"
-    />
-  </head>
-  <body>
-    <div class="admin-container">
-      <!-- Sidebar -->
-      <div class="admin-sidebar">
-        <div class="admin-sidebar-header">
-          <img src="{{ url_for('static', filename='logo.svg') }}" alt="Ilm Plyus Logo">
-          <p>Admin Panel</p>
-        </div>
-        <div class="admin-sidebar-menu">
-          <a
-            href="{{ url_for('admin_dashboard') }}"
-            class="admin-menu-item"
-          >
-            <i class="fas fa-dashboard"></i> Dashboard
-          </a>
-          <a href="{{ url_for('admin_sliders') }}" class="admin-menu-item">
-            <i class="fas fa-images"></i> Slayderlar
-          </a>
-          <a href="{{ url_for('admin_courses') }}" class="admin-menu-item">
-            <i class="fas fa-book"></i> Kurslar
-          </a>
-          <a href="{{ url_for('admin_branches') }}" class="admin-menu-item">
-            <i class="fas fa-map-marker-alt"></i> Filiallar
-          </a>
-          <a href="{{ url_for('admin_about') }}" class="admin-menu-item">
-            <i class="fas fa-info-circle"></i> Biz haqimizda
-          </a>
-          <a href="{{ url_for('admin_testimonials') }}" class="admin-menu-item">
-            <i class="fas fa-star"></i> O'quvchilar fikrlar
-          </a>
-          <a href="{{ url_for('admin_news') }}" class="admin-menu-item">
-            <i class="fas fa-newspaper"></i> Yangiliklar
-          </a>
-          <a href="{{ url_for('admin_applications') }}" class="admin-menu-item">
-            <i class="fas fa-envelope"></i> Arizalar {% if
-            recent_applications|selectattr('status', 'equalto',
-            'new')|list|length > 0 %}
-            <span class="badge"
-              >{{ recent_applications|selectattr('status', 'equalto',
-              'new')|list|length }}</span
-            >
-            {% endif %}
-          </a>
-          <a href="{{ url_for('admin_profile') }}" class="admin-menu-item">
-            <i class="fas fa-user-circle"></i> Profil
-          </a>
-          <a href="{{ url_for('admin_logout') }}" class="admin-menu-item">
-            <i class="fas fa-sign-out-alt"></i> Chiqish
-          </a>
-        </div>
-      </div>
+{% extends "admin/base_admin.html" %}
 
-      <!-- Main Content -->
-      <div class="admin-main">
-        <!-- Top Navbar -->
-        <div class="admin-navbar">
-          <div class="admin-navbar-title">
-            <h4>Dashboard</h4>
-          </div>
-          <a href="{{ url_for('admin_profile') }}" class="admin-navbar-user" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 15px;">
-            <div class="admin-user-info">
-              <div class="admin-user-name">{{ current_user.username }}</div>
-              <div class="admin-user-role">Administrator</div>
-            </div>
-            <div class="admin-user-avatar">
-              {{ current_user.username[0]|upper }}
-            </div>
-          </a>
-        </div>
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% set page_icon = "fas fa-chart-line" %}
 
-        <!-- Stats Cards -->
-        <div class="admin-stats-grid">
-          <div class="admin-stat-card">
-            <div class="stat-icon blue">
-              <i class="fas fa-book"></i>
-            </div>
-            <div class="stat-info">
-              <h3>{{ courses_count }}</h3>
-              <p>Jami kurslar</p>
-            </div>
-          </div>
-          <div class="admin-stat-card">
-            <div class="stat-icon green">
-              <i class="fas fa-map-marker-alt"></i>
-            </div>
-            <div class="stat-info">
-              <h3>{{ branches_count }}</h3>
-              <p>Filiallar</p>
-            </div>
-          </div>
-          <div class="admin-stat-card">
-            <div class="stat-icon purple">
-              <i class="fas fa-star"></i>
-            </div>
-            <div class="stat-info">
-              <h3>{{ testimonials_count }}</h3>
-              <p>O'quvchi fikriyati</p>
-            </div>
-          </div>
-          <div class="admin-stat-card">
-            <div class="stat-icon orange">
-              <i class="fas fa-envelope"></i>
-            </div>
-            <div class="stat-info">
-              <h3>{{ applications_count }}</h3>
-              <p>Yangi arizalar</p>
-            </div>
-          </div>
-          <div class="admin-stat-card">
-            <div class="stat-icon red">
-              <i class="fas fa-users"></i>
-            </div>
-            <div class="stat-info">
-              <h3>1245</h3>
-              <p>O'quvchilar</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent Applications -->
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <h5>So'nggi arizalar</h5>
-            <a
-              href="{{ url_for('admin_applications') }}"
-              class="admin-btn admin-btn-primary admin-btn-sm"
-            >
-              Barchasini ko'rish
-            </a>
-          </div>
-          <div class="admin-card-body">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Ism</th>
-                  <th>Telefon</th>
-                  <th>Kurs</th>
-                  <th>Sana</th>
-                  <th>Status</th>
-                  <th>Amallar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for app in recent_applications %}
-                <tr>
-                  <td>#{{ app.id }}</td>
-                  <td>{{ app.name }}</td>
-                  <td>{{ app.phone }}</td>
-                  <td>
-                    {{ app.course_id if app.course_id else 'Ko\'rsatilmagan' }}
-                  </td>
-                  <td>{{ app.created_at.strftime('%d.%m.%Y') }}</td>
-                  <td>
-                    {% if app.status == 'new' %}
-                    <span class="badge badge-warning">Yangi</span>
-                    {% elif app.status == 'contacted' %}
-                    <span class="badge badge-info">Bog'lanilgan</span>
-                    {% elif app.status == 'completed' %}
-                    <span class="badge badge-success">Yakunlangan</span>
-                    {% else %}
-                    <span class="badge badge-danger">Bekor qilingan</span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    <button
-                      class="admin-btn admin-btn-primary admin-btn-sm"
-                      onclick="viewApplication({{ app.id }})"
-                    >
-                      <i class="fas fa-eye"></i>
-                    </button>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <h5>Tezkor amallar</h5>
-          </div>
-          <div class="admin-card-body">
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-              <a
-                href="{{ url_for('admin_add_course') }}"
-                class="admin-btn admin-btn-primary"
-              >
-                <i class="fas fa-book"></i> Yangi kurs
-              </a>
-              <a
-                href="{{ url_for('admin_add_branch') }}"
-                class="admin-btn admin-btn-success"
-              >
-                <i class="fas fa-map-marker-alt"></i> Yangi filial
-              </a>
-              <a
-                href="{{ url_for('admin_add_slider') }}"
-                class="admin-btn admin-btn-primary"
-                style="background-color: #6c757d;"
-              >
-                <i class="fas fa-images"></i> Yangi slayd
-              </a>
-              <a
-                href="{{ url_for('admin_add_news') }}"
-                class="admin-btn admin-btn-primary"
-                style="background-color: #17a2b8;"
-              >
-                <i class="fas fa-newspaper"></i> Yangi yangilik
-              </a>
-              <a
-                href="{{ url_for('admin_add_testimonial') }}"
-                class="admin-btn admin-btn-primary"
-                style="background-color: #f8931d;"
-              >
-                <i class="fas fa-star"></i> Yangi fikr
-              </a>
-              <a
-                href="{{ url_for('admin_about') }}"
-                class="admin-btn admin-btn-primary"
-                style="background-color: #6610f2;"
-              >
-                <i class="fas fa-info-circle"></i> Biz haqimizda
-              </a>
-            </div>
-            <a href="{{ url_for('admin_profile') }}" class="quick-action-btn">
-              <i class="fas fa-user-circle"></i>
-              <span>Profil</span>
-            </a>
-          </div>
-        </div>
-      </div>
+{% block content %}
+<!-- Stats -->
+<div class="admin-stats-grid">
+  <div class="admin-stat-card animate-up">
+    <div class="stat-icon blue"><i class="fas fa-book"></i></div>
+    <div class="stat-info">
+      <h3>{{ courses_count }}</h3>
+      <p>Jami kurslar</p>
     </div>
+  </div>
+  <div class="admin-stat-card animate-up">
+    <div class="stat-icon green"><i class="fas fa-map-marker-alt"></i></div>
+    <div class="stat-info">
+      <h3>{{ branches_count }}</h3>
+      <p>Filiallar</p>
+    </div>
+  </div>
+  <div class="admin-stat-card animate-up">
+    <div class="stat-icon purple"><i class="fas fa-star"></i></div>
+    <div class="stat-info">
+      <h3>{{ testimonials_count }}</h3>
+      <p>O'quvchi fikrlari</p>
+    </div>
+  </div>
+  <div class="admin-stat-card animate-up">
+    <div class="stat-icon orange"><i class="fas fa-envelope"></i></div>
+    <div class="stat-info">
+      <h3>{{ applications_count }}</h3>
+      <p>Arizalar</p>
+    </div>
+  </div>
+</div>
 
-    <script>
-      function viewApplication(id) {
-        // Arizani ko'rish modalini ochish
-        alert("Ariza #" + id + " - Bu funksiya tez orada ishga tushadi");
-      }
-    </script>
-  </body>
-</html>
+<!-- Quick Actions -->
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h5><i class="fas fa-bolt" style="margin-right:10px"></i>Tezkor amallar</h5>
+  </div>
+  <div class="admin-card-body">
+    <div class="quick-actions-grid">
+      <a href="{{ url_for('admin_add_course') }}" class="action-card">
+        <i class="fas fa-plus-circle"></i>
+        <div class="action-card-title">Yangi kurs</div>
+      </a>
+      <a href="{{ url_for('admin_add_branch') }}" class="action-card">
+        <i class="fas fa-map-marker-alt"></i>
+        <div class="action-card-title">Yangi filial</div>
+      </a>
+      <a href="{{ url_for('admin_add_testimonial') }}" class="action-card">
+        <i class="fas fa-quote-left"></i>
+        <div class="action-card-title">Fikr qo'shish</div>
+      </a>
+      <a href="{{ url_for('admin_add_news') }}" class="action-card">
+        <i class="fas fa-newspaper"></i>
+        <div class="action-card-title">Yangilik qo'shish</div>
+      </a>
+      <a href="{{ url_for('admin_applications') }}" class="action-card">
+        <i class="fas fa-list"></i>
+        <div class="action-card-title">Barchasini ko'rish</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Applications -->
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h5><i class="fas fa-clock" style="margin-right:10px"></i>So'nggi arizalar</h5>
+    <a href="{{ url_for('admin_applications') }}" class="admin-btn admin-btn-primary admin-btn-sm">
+      <i class="fas fa-arrow-right"></i> Barchasini ko'rish
+    </a>
+  </div>
+  <div class="admin-card-body">
+    {% if recent_applications %}
+    <div style="overflow-x:auto">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Ism</th>
+            <th>Telefon</th>
+            <th>Kurs</th>
+            <th>Sana</th>
+            <th>Status</th>
+            <th>Ko'rish</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in recent_applications %}
+          <tr>
+            <td>#{{ app.id }}</td>
+            <td><strong>{{ app.name }}</strong></td>
+            <td>{{ app.phone }}</td>
+            <td>{{ app.course.title if app.course else '—' }}</td>
+            <td>{{ app.created_at.strftime('%d.%m.%Y') }}</td>
+            <td>
+              {% if app.status == 'new' %}<span class="badge badge-warning">🆕 Yangi</span>
+              {% elif app.status == 'contacted' %}<span class="badge badge-info">📞 Bog'lanilgan</span>
+              {% elif app.status == 'completed' %}<span class="badge badge-success">✓ Yakunlangan</span>
+              {% else %}<span class="badge badge-danger">✕ Bekor</span>{% endif %}
+            </td>
+            <td>
+              <a href="{{ url_for('admin_view_application', app_id=app.id) }}"
+                 class="admin-btn admin-btn-primary admin-btn-sm admin-btn-icon"
+                 title="Ko'rish">
+                <i class="fas fa-eye"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:40px;color:var(--admin-text-muted)">
+      <i class="fas fa-inbox" style="font-size:48px;margin-bottom:16px;opacity:0.3"></i>
+      <p>Hozirda hech qanday ariza yo'q</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
