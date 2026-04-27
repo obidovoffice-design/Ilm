@@ -7,10 +7,23 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ilmplyus-secret-key-2025'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ilmplyus.db'
+
+# Database configuration
+db_url = os.environ.get('DATABASE_URL', 'sqlite:///ilmplyus.db')
+if db_url.startswith('postgres://'):
+    db_url = db_url.replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
+# Create tables if they don't exist
+with app.app_context():
+    try:
+        db.create_all()
+    except Exception as e:
+        print(f"Error creating database tables: {e}")
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'admin_login'
